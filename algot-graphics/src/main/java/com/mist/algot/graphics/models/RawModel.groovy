@@ -1,4 +1,4 @@
-package com.mist.algot.graphics.rendering
+package com.mist.algot.graphics.models
 
 class RawModel {
 

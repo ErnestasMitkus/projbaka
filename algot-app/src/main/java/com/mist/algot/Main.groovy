@@ -1,10 +1,12 @@
 package com.mist.algot
 
+import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.rendering.DisplayManager
 import com.mist.algot.graphics.rendering.Loader
-import com.mist.algot.graphics.rendering.RawModel
+import com.mist.algot.graphics.models.RawModel
 import com.mist.algot.graphics.rendering.Renderer
 import com.mist.algot.graphics.shaders.StaticShader
+import com.mist.algot.graphics.textures.ModelTexture
 import org.apache.commons.lang3.SystemUtils
 import org.lwjgl.opengl.Display
 
@@ -30,13 +32,23 @@ class Main {
             0, 1, 3,
             3, 1, 2
         ]
-        RawModel squareModel = loader.loadToVAO(squareVertices, squareIndices)
+
+        float[] textureCoords = [
+            0, 0, //v0
+            0, 1, //v1
+            1, 1, //v2
+            1, 0  //v3
+        ]
+
+        RawModel squareModel = loader.loadToVAO(squareVertices, textureCoords, squareIndices)
+        ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/doge.png"))
+        TexturedModel texturedModel = new TexturedModel(squareModel, texture)
 
         while (!Display.isCloseRequested()) {
             renderer.prepare()
 
             shader.start()
-            renderer.render(squareModel)
+            renderer.render(texturedModel)
             shader.stop()
 
             DisplayManager.updateDisplay()

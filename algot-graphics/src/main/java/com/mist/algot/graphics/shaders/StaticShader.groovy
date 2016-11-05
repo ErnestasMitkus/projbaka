@@ -1,5 +1,7 @@
 package com.mist.algot.graphics.shaders
 
+import com.mist.algot.graphics.rendering.Loader
+
 class StaticShader extends ShaderProgram {
 
     private static final String VERTEX_FILE = "/shaders/main.vert"
@@ -11,6 +13,7 @@ class StaticShader extends ShaderProgram {
 
     @Override
     protected void bindAttributes() {
-        bindAttribute(0, "position")
+        bindAttribute(Loader.VERTICES_ATTRIB_INDEX, "position")
+        bindAttribute(Loader.TEXTURE_COORDINATES_ATTRIB_INDEX, "textureCoords")
     }
 }
