@@ -1,14 +1,21 @@
 package com.mist.algot.graphics.shaders
 
 import com.mist.algot.graphics.FileUtils
+import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
+import org.lwjgl.util.vector.Matrix4f
+import org.lwjgl.util.vector.Vector3f
+
+import java.nio.FloatBuffer
 
 abstract class ShaderProgram {
 
     private int programId
     private int vertexShaderId
     private int fragmentShaderId
+
+    private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(4*4)
 
     public ShaderProgram(String vertexFile, String fragmentFile) {
         vertexShaderId = loadShader(vertexFile, GL20.GL_VERTEX_SHADER)
@@ -20,6 +27,13 @@ abstract class ShaderProgram {
         bindAttributes()
         GL20.glLinkProgram(programId)
         GL20.glValidateProgram(programId)
+        getAllUniformLocations()
+    }
+
+    protected abstract void getAllUniformLocations()
+
+    protected int getUniformLocation(String uniformName) {
+        GL20.glGetUniformLocation(programId, uniformName)
     }
 
     void start() {
@@ -43,6 +57,24 @@ abstract class ShaderProgram {
 
     protected void bindAttribute(int attribute, String variableName) {
         GL20.glBindAttribLocation(programId, attribute, variableName)
+    }
+
+    protected void loadFloat(int location, float value) {
+        GL20.glUniform1f(location, value)
+    }
+
+    protected void loadVector(int location, Vector3f vector) {
+        GL20.glUniform3f(location, vector.x, vector.y, vector.z)
+    }
+
+    protected void loadBoolean(int location, boolean value) {
+        loadFloat(location, value ? 1 : 0)
+    }
+
+    protected void loadMatrix(int location, Matrix4f matrix4f) {
+        matrix4f.store(matrixBuffer)
+        matrixBuffer.flip()
+        GL20.glUniformMatrix4(location, false, matrixBuffer)
     }
 
     private static int loadShader(String file, int type){
