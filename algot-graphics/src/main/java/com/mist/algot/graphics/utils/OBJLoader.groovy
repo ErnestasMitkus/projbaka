@@ -72,7 +72,7 @@ class OBJLoader {
                 indicesArray[i] = indices[i]
             }
 
-            return loader.loadToVAO(verticesArray, textureArray, indicesArray)
+            return loader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray)
         } catch (Exception e) {
             throw new RuntimeException(e)
         } finally {

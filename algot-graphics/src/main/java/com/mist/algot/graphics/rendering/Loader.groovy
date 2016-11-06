@@ -21,16 +21,18 @@ class Loader {
 
     public static final Integer VERTICES_ATTRIB_INDEX = 0
     public static final Integer TEXTURE_COORDINATES_ATTRIB_INDEX = 1
+    public static final Integer NORMALS_ATTRIB_INDEX = 2
 
     private final List<Integer> vaos = []
     private final List<Integer> vbos = []
     private final List<Integer> textures = []
 
-    RawModel loadToVAO(float[] positions, float[] textureCoords, int[] indices) {
+    RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
         int vaoId = createVAO()
         bindIndicesBuffer(indices)
         storeDataInAttributeList(VERTICES_ATTRIB_INDEX, VECTOR_3_SIZE, positions)
         storeDataInAttributeList(TEXTURE_COORDINATES_ATTRIB_INDEX, VECTOR_2_SIZE, textureCoords)
+        storeDataInAttributeList(NORMALS_ATTRIB_INDEX, VECTOR_3_SIZE, normals)
         unbindVAO()
         return new RawModel(vaoId, indices.length)
     }

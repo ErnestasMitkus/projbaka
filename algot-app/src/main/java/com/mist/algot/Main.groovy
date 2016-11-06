@@ -2,6 +2,7 @@ package com.mist.algot
 
 import com.mist.algot.graphics.entities.Camera
 import com.mist.algot.graphics.entities.Entity
+import com.mist.algot.graphics.entities.Light
 import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.rendering.DisplayManager
 import com.mist.algot.graphics.rendering.Loader
@@ -104,7 +105,8 @@ class Main {
         ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/white.png"))
         TexturedModel texturedModel = new TexturedModel(squareModel, texture)
 
-        Entity entity = new Entity(texturedModel, new Vector3f(0, -5, -20))
+        Entity entity = new Entity(texturedModel, new Vector3f(0, 0, -25))
+        Light light = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1))
 
         Camera camera = new Camera()
 
@@ -115,6 +117,7 @@ class Main {
             camera.move()
 
             shader.start()
+            shader.loadLight(light)
             shader.loadViewMatrix(camera)
             renderer.render(entity)
             shader.stop()

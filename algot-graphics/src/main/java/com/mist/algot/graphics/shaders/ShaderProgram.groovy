@@ -86,10 +86,21 @@ abstract class ShaderProgram {
 
         if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
             System.out.println(GL20.glGetShaderInfoLog(shaderId, 500))
-            throw new RuntimeException("Could not compile shader")
+            throw new RuntimeException("Could not compile ${shaderTypeToString(type)} shader")
         }
 
         return shaderId
+    }
+
+    private static String shaderTypeToString(int type) {
+        switch(type) {
+            case GL20.GL_VERTEX_SHADER:
+                return "vertex"
+            case GL20.GL_FRAGMENT_SHADER:
+                return "fragment"
+            default:
+                return "unknown(type=$type)"
+        }
     }
 
 }

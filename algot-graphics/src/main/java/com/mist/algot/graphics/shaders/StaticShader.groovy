@@ -1,6 +1,7 @@
 package com.mist.algot.graphics.shaders
 
 import com.mist.algot.graphics.entities.Camera
+import com.mist.algot.graphics.entities.Light
 import com.mist.algot.graphics.rendering.Loader
 import org.lwjgl.util.vector.Matrix4f
 
@@ -12,6 +13,8 @@ class StaticShader extends ShaderProgram {
     private int location_transformationMatrix
     private int location_projectionMatrix
     private int location_viewMatrix
+    private int location_lightPosition
+    private int location_lightColor
 
     public StaticShader() {
         super(VERTEX_FILE, FRAGMENT_FILE)
@@ -21,6 +24,7 @@ class StaticShader extends ShaderProgram {
     protected void bindAttributes() {
         bindAttribute(Loader.VERTICES_ATTRIB_INDEX, "position")
         bindAttribute(Loader.TEXTURE_COORDINATES_ATTRIB_INDEX, "textureCoords")
+        bindAttribute(Loader.NORMALS_ATTRIB_INDEX, "normal")
     }
 
     @Override
@@ -28,6 +32,8 @@ class StaticShader extends ShaderProgram {
         location_transformationMatrix = getUniformLocation("transformationMatrix")
         location_projectionMatrix = getUniformLocation("projectionMatrix")
         location_viewMatrix = getUniformLocation("viewMatrix")
+        location_lightPosition = getUniformLocation("lightPosition")
+        location_lightColor = getUniformLocation("lightColor")
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
@@ -40,5 +46,10 @@ class StaticShader extends ShaderProgram {
 
     public void loadViewMatrix(Camera camera) {
         loadMatrix(location_viewMatrix, camera.viewMatrix)
+    }
+
+    public void loadLight(Light light) {
+        loadVector(location_lightPosition, light.position)
+        loadVector(location_lightColor, light.color)
     }
 }

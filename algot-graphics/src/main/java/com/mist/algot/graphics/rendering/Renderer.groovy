@@ -11,6 +11,7 @@ import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
 import org.lwjgl.util.vector.Matrix4f
 
+import static com.mist.algot.graphics.rendering.Loader.NORMALS_ATTRIB_INDEX
 import static com.mist.algot.graphics.rendering.Loader.TEXTURE_COORDINATES_ATTRIB_INDEX
 import static com.mist.algot.graphics.rendering.Loader.VERTICES_ATTRIB_INDEX
 
@@ -41,7 +42,7 @@ class Renderer {
         TexturedModel model = entity.model
         RawModel rawModel = model.rawModel
         GL30.glBindVertexArray(rawModel.vaoId)
-        withEnabledAttributes([VERTICES_ATTRIB_INDEX, TEXTURE_COORDINATES_ATTRIB_INDEX]) {
+        withEnabledAttributes([VERTICES_ATTRIB_INDEX, TEXTURE_COORDINATES_ATTRIB_INDEX, NORMALS_ATTRIB_INDEX]) {
             staticShader.loadTransformationMatrix(entity.transformationMatrix)
             GL13.glActiveTexture(GL13.GL_TEXTURE0)
             GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.texture.id)
