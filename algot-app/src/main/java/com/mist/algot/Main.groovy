@@ -103,6 +103,8 @@ class Main {
 //        RawModel squareModel = loader.loadToVAO(vertices, textureCoords, indices)
         RawModel squareModel = OBJLoader.loadObjModel("/objects/dragon.obj", loader)
         ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/white.png"))
+        texture.shineDamper = 10
+        texture.reflectivity = 1
         TexturedModel texturedModel = new TexturedModel(squareModel, texture)
 
         Entity entity = new Entity(texturedModel, new Vector3f(0, 0, -25))

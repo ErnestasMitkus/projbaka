@@ -4,6 +4,7 @@ import com.mist.algot.graphics.entities.Entity
 import com.mist.algot.graphics.models.RawModel
 import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.shaders.StaticShader
+import com.mist.algot.graphics.textures.ModelTexture
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -40,12 +41,14 @@ class Renderer {
 
     void render(Entity entity) {
         TexturedModel model = entity.model
+        ModelTexture texture = model.texture
         RawModel rawModel = model.rawModel
         GL30.glBindVertexArray(rawModel.vaoId)
         withEnabledAttributes([VERTICES_ATTRIB_INDEX, TEXTURE_COORDINATES_ATTRIB_INDEX, NORMALS_ATTRIB_INDEX]) {
             staticShader.loadTransformationMatrix(entity.transformationMatrix)
+            staticShader.loadShineVariables(texture.shineDamper, texture.reflectivity)
             GL13.glActiveTexture(GL13.GL_TEXTURE0)
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.texture.id)
+            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.id)
             GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
         }
         GL30.glBindVertexArray(0)
