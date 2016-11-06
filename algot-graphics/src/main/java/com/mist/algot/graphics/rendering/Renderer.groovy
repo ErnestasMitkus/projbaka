@@ -26,6 +26,9 @@ class Renderer {
     private final Matrix4f projectionMatrix
 
     Renderer(StaticShader staticShader) {
+        GL11.glEnable(GL11.GL_CULL_FACE)
+        GL11.glCullFace(GL11.GL_BACK)
+
         projectionMatrix = createProjectionMatrix()
         this.staticShader = staticShader
         staticShader.start()
