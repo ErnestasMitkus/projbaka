@@ -24,10 +24,21 @@ class Maths {
         return matrix
     }
 
-    private static void rotate(Matrix4f matrix, Vector3f rotation) {
+    public static Matrix4f createViewMatrix(Vector3f position, float pitch, float yaw, float roll) {
+        Matrix4f viewMatrix = new Matrix4f()
+        rotate(viewMatrix, new Vector3f(pitch, yaw, roll))
+        Matrix4f.translate(invert(position), viewMatrix, viewMatrix)
+        return viewMatrix
+    }
+
+    public static void rotate(Matrix4f matrix, Vector3f rotation) {
         Matrix4f.rotate((float) Math.toRadians(rotation.x), AXIS_X, matrix, matrix)
         Matrix4f.rotate((float) Math.toRadians(rotation.y), AXIS_Y, matrix, matrix)
         Matrix4f.rotate((float) Math.toRadians(rotation.z), AXIS_Z, matrix, matrix)
+    }
+
+    public static Vector3f invert(Vector3f vector) {
+        new Vector3f(-vector.x, -vector.y, -vector.z)
     }
 
 }
