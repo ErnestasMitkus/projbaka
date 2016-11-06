@@ -7,7 +7,7 @@ import org.lwjgl.util.vector.Vector3f
 
 class Camera {
 
-    private static final float CAM_SPEED = 0.02f
+    private static final float CAM_SPEED = 0.1f
 
     private Vector3f position = new Vector3f()
     private float pitch // how high or low the camera is aimed
@@ -28,6 +28,12 @@ class Camera {
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
             position.x -= CAM_SPEED
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+            position.y += CAM_SPEED
+        }
+        if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
+            position.y -= CAM_SPEED
         }
     }
 

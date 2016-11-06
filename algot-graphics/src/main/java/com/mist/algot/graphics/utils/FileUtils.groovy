@@ -1,4 +1,4 @@
-package com.mist.algot.graphics
+package com.mist.algot.graphics.utils
 
 class FileUtils {
 

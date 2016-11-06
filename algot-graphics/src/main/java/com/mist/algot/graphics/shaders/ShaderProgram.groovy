@@ -1,6 +1,6 @@
 package com.mist.algot.graphics.shaders
 
-import com.mist.algot.graphics.FileUtils
+import com.mist.algot.graphics.utils.FileUtils
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20

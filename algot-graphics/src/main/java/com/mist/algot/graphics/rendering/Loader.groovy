@@ -1,6 +1,6 @@
 package com.mist.algot.graphics.rendering
 
-import com.mist.algot.graphics.FileUtils
+import com.mist.algot.graphics.utils.FileUtils
 import com.mist.algot.graphics.models.RawModel
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11

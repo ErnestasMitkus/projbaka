@@ -9,6 +9,7 @@ import com.mist.algot.graphics.models.RawModel
 import com.mist.algot.graphics.rendering.Renderer
 import com.mist.algot.graphics.shaders.StaticShader
 import com.mist.algot.graphics.textures.ModelTexture
+import com.mist.algot.graphics.utils.OBJLoader
 import org.apache.commons.lang3.SystemUtils
 import org.lwjgl.opengl.Display
 import org.lwjgl.util.vector.Vector3f
@@ -98,18 +99,19 @@ class Main {
             23,21,22
 		];
 
-        RawModel squareModel = loader.loadToVAO(vertices, textureCoords, indices)
-        ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/doge.png"))
+//        RawModel squareModel = loader.loadToVAO(vertices, textureCoords, indices)
+        RawModel squareModel = OBJLoader.loadObjModel("/objects/dragon.obj", loader)
+        ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/white.png"))
         TexturedModel texturedModel = new TexturedModel(squareModel, texture)
 
-        Entity entity = new Entity(texturedModel, new Vector3f(0, 0, -5))
+        Entity entity = new Entity(texturedModel, new Vector3f(0, -5, -20))
 
         Camera camera = new Camera()
 
         while (!Display.isCloseRequested()) {
             renderer.prepare()
 
-            entity.increaseRotation(0, 1, -1)
+            entity.increaseRotation(0, 1, 0)
             camera.move()
 
             shader.start()
