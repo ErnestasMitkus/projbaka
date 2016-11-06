@@ -1,10 +1,8 @@
 package com.mist.algot.graphics.rendering
 
 import com.mist.algot.graphics.entities.Entity
-import com.mist.algot.graphics.models.RawModel
 import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.shaders.StaticShader
-import com.mist.algot.graphics.textures.ModelTexture
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -42,19 +40,26 @@ class Renderer {
         GL11.glClearColor(0.3f, 0, 0, 1)
     }
 
-    void render(Entity entity) {
-        TexturedModel model = entity.model
-        ModelTexture texture = model.texture
-        RawModel rawModel = model.rawModel
-        GL30.glBindVertexArray(rawModel.vaoId)
+    void render(Map<TexturedModel, List<Entity>> entities) {
+        entities.keySet().each { renderEntities(it, entities[it]) }
+    }
+
+    private void renderEntities(TexturedModel model, List<Entity> entities) {
         withEnabledAttributes([VERTICES_ATTRIB_INDEX, TEXTURE_COORDINATES_ATTRIB_INDEX, NORMALS_ATTRIB_INDEX]) {
-            staticShader.loadTransformationMatrix(entity.transformationMatrix)
-            staticShader.loadShineVariables(texture.shineDamper, texture.reflectivity)
-            GL13.glActiveTexture(GL13.GL_TEXTURE0)
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.id)
-            GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
+            entities.each { entity ->
+                def texture = model.texture
+                def rawModel = model.rawModel
+
+                GL30.glBindVertexArray(rawModel.vaoId)
+
+                staticShader.loadTransformationMatrix(entity.transformationMatrix)
+                staticShader.loadShineVariables(texture.shineDamper, texture.reflectivity)
+
+                GL13.glActiveTexture(GL13.GL_TEXTURE0)
+                GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.id)
+                GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
+            }
         }
-        GL30.glBindVertexArray(0)
     }
 
     private static Matrix4f createProjectionMatrix() {
