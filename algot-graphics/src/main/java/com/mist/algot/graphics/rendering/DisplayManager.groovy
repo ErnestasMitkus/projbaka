@@ -19,7 +19,8 @@ class DisplayManager {
     private static float delta;
 
     public static void createDisplay(){
-        ContextAttribs attribs = new ContextAttribs(3, 0) // TODO: 3, 2 on windows
+        ContextAttribs attribs = null
+        attribs = new ContextAttribs(3, 0)
             .withForwardCompatible(true)
 //            .withProfileCore(true)
 
