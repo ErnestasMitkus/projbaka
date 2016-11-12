@@ -18,11 +18,21 @@ class DisplayManager {
     private static long lastFrameTime;
     private static float delta;
 
-    public static void createDisplay(){
+    public static void createDisplay() {
+        createDisplay(null)
+    }
+
+    public static void createDisplay(int majorVersion, int minorVersion) {
+        createDisplay(new Version(majorVersion, minorVersion))
+    }
+
+    public static void createDisplay(Version openGlVersion) {
         ContextAttribs attribs = null
-        attribs = new ContextAttribs(3, 0)
-            .withForwardCompatible(true)
-//            .withProfileCore(true)
+        if (openGlVersion) {
+            attribs = new ContextAttribs(openGlVersion.major, openGlVersion.minor)
+//                .withForwardCompatible(true)
+//                .withProfileCore(true)
+        }
 
         try {
             Display.setDisplayMode(new DisplayMode(WIDTH, HEIGHT))
@@ -57,5 +67,13 @@ class DisplayManager {
         return Sys.getTime()*1000 / Sys.getTimerResolution()
     }
 
+    public static class Version {
+        private final int major
+        private final int minor
+        public Version(int major, int minor) {
+            this.major = major
+            this.minor = minor
+        }
+    }
 
 }

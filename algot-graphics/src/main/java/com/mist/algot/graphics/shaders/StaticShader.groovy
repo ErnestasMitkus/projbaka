@@ -1,6 +1,6 @@
 package com.mist.algot.graphics.shaders
 
-import com.mist.algot.graphics.entities.Camera
+import com.mist.algot.graphics.entities.LockedCamera
 import com.mist.algot.graphics.entities.Light
 import com.mist.algot.graphics.rendering.Loader
 import org.lwjgl.util.vector.Matrix4f
@@ -48,7 +48,7 @@ class StaticShader extends ShaderProgram {
         loadMatrix(location_projectionMatrix, matrix)
     }
 
-    public void loadViewMatrix(Camera camera) {
+    public void loadViewMatrix(LockedCamera camera) {
         loadMatrix(location_viewMatrix, camera.viewMatrix)
     }
 

@@ -1,21 +1,17 @@
 package com.mist.algot.graphics.rendering
 
-import com.mist.algot.graphics.entities.Entity
+import com.mist.algot.graphics.entities.Camera
+import com.mist.algot.graphics.entities.LockedCamera
+import com.mist.algot.graphics.model.TexturedVertex
+import com.mist.algot.graphics.model.VTriangle
 import com.mist.algot.graphics.model.Vertex
-import com.mist.algot.graphics.models.TexturedModel
-import com.mist.algot.graphics.shaders.StaticShader
+import com.mist.algot.graphics.toolbox.Maths
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL13
-import org.lwjgl.opengl.GL20
-import org.lwjgl.opengl.GL30
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
+import org.lwjgl.util.vector.Vector4f
 import org.newdawn.slick.Color
-
-import static com.mist.algot.graphics.rendering.Loader.NORMALS_ATTRIB_INDEX
-import static com.mist.algot.graphics.rendering.Loader.TEXTURE_COORDINATES_ATTRIB_INDEX
-import static com.mist.algot.graphics.rendering.Loader.VERTICES_ATTRIB_INDEX
 
 class FlatRenderer {
 
@@ -31,8 +27,13 @@ class FlatRenderer {
 
     private Color backgroundColor = Color.black
 
+    private Matrix4f transformationMatrix = new Matrix4f()
+    private Matrix4f viewMatrix = new Matrix4f()
+    private final Matrix4f projectionMatrix
+
     FlatRenderer() {
         setColor(Color.white)
+        projectionMatrix = createProjectionMatrix()
 //        projectionMatrix = createProjectionMatrix()
 //        this.staticShader = staticShader
 //        staticShader.start()
@@ -69,56 +70,81 @@ class FlatRenderer {
         GL11.glDisable(GL11.GL_DEPTH_TEST)
     }
 
-    void render(List<Vertex> vertices) {
-        vertices.each {
-            GL11.glVertex3f(it.x, it.y, it.z)
+    void renderTriangles(List<VTriangle> triangles) {
+        GL11.glBegin(GL11.GL_TRIANGLES)
+        triangles.each {
+            drawVertex(it.first)
+            drawVertex(it.second)
+            drawVertex(it.third)
         }
+        GL11.glEnd()
+    }
+
+    void renderLines(List<VTriangle> triangles) {
+        enableWireframe()
+        renderTriangles(triangles)
+        disableWireframe()
+    }
+
+    void loadTexture(int textureId) {
+        GL11.glEnable(GL11.GL_TEXTURE_2D);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, textureId);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+    }
+
+    void renderTextured(List<VTriangle> triangles) {
+        GL11.glBegin(GL11.GL_TRIANGLES)
+
+        triangles.each {
+            drawTexturedVertex(it.first)
+            drawTexturedVertex(it.second)
+            drawTexturedVertex(it.third)
+        }
+
+        GL11.glEnd()
+    }
+
+    void drawTexturedVertex(TexturedVertex vertex) {
+        GL11.glTexCoord2f(vertex.texCoordX, vertex.texCoordY)
+        drawVertex(vertex)
+    }
+
+    void drawVertex(Vertex vertex) {
+        def vec = new Vector4f(vertex.x, vertex.y, vertex.z, 1f)
+        def transformed = applyTransformations(vec)
+        float x = transformed.x,
+              y = transformed.y,
+              z = transformed.z
+        GL11.glVertex3f(x, y, z)
+    }
+
+    Vector3f applyTransformations(Vector4f position) {
+        def worldPosition = Maths.multiply(transformationMatrix, position)
+        def projView = Matrix4f.mul(projectionMatrix, viewMatrix, null)
+
+        Maths.normalize(Maths.multiply(projView, worldPosition))
+    }
+
+    void enableWireframe() {
+        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE)
+    }
+
+    void disableWireframe() {
+        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL)
+    }
+
+    void updateTransformationMatrix(Matrix4f transformationMatrix) {
+        this.transformationMatrix = transformationMatrix
+    }
+
+    void updateViewMatrix(Camera camera) {
+        this.viewMatrix = camera.viewMatrix
     }
 
     static void setColor(Color color) {
         GL11.glColor3f(color.r, color.g, color.b)
     }
-
-//    private void renderEntities(TexturedModel model, List<Entity> entities) {
-//        withEnabledAttributes([VERTICES_ATTRIB_INDEX, TEXTURE_COORDINATES_ATTRIB_INDEX, NORMALS_ATTRIB_INDEX]) {
-//            entities.each { entity ->
-//                def texture = model.texture
-//                def rawModel = model.rawModel
-//
-//                GL30.glBindVertexArray(rawModel.vaoId)
-//
-//                staticShader.loadTransformationMatrix(entity.transformationMatrix)
-//                staticShader.loadShineVariables(texture.shineDamper, texture.reflectivity)
-//
-//                GL13.glActiveTexture(GL13.GL_TEXTURE0)
-//                GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.id)
-//                GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
-//            }
-//        }
-//    }
-
-//    private static Matrix4f createProjectionMatrix() {
-//        float aspectRatio = (float) Display.displayMode.width / (float) Display.displayMode.height
-//        float xScale = (1f / Math.tan(Math.toRadians(FOV / 2f)))
-//        float yScale = xScale * aspectRatio
-//        float frustumLength = FAR_PLANE - NEAR_PLANE
-//
-//        def projectionMatrix = new Matrix4f()
-//        projectionMatrix.m00 = xScale
-//        projectionMatrix.m11 = yScale
-//        projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustumLength)
-//        projectionMatrix.m23 = -1
-//        projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustumLength)
-//        projectionMatrix.m33 = 0
-//
-//        return projectionMatrix
-//    }
-
-//    private static void withEnabledAttributes(List<Integer> attribs, Closure closure) {
-//        attribs.forEach(GL20.&glEnableVertexAttribArray)
-//        closure.call()
-//        attribs.forEach(GL20.&glDisableVertexAttribArray)
-//    }
 
     Color getBackgroundColor() {
         return backgroundColor
@@ -126,5 +152,22 @@ class FlatRenderer {
 
     void setBackgroundColor(Color backgroundColor) {
         this.backgroundColor = backgroundColor
+    }
+
+    private static Matrix4f createProjectionMatrix() {
+        float aspectRatio = (float) Display.displayMode.width / (float) Display.displayMode.height
+        float xScale = (1f / Math.tan(Math.toRadians(FOV / 2f)))
+        float yScale = xScale * aspectRatio
+        float frustumLength = FAR_PLANE - NEAR_PLANE
+
+        def projectionMatrix = new Matrix4f()
+        projectionMatrix.m00 = xScale
+        projectionMatrix.m11 = yScale
+        projectionMatrix.m22 = -((FAR_PLANE + NEAR_PLANE) / frustumLength)
+        projectionMatrix.m23 = -1
+        projectionMatrix.m32 = -((2 * NEAR_PLANE * FAR_PLANE) / frustumLength)
+        projectionMatrix.m33 = 0
+
+        return projectionMatrix
     }
 }

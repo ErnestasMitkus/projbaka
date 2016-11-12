@@ -1,6 +1,6 @@
 package com.mist.algot.graphics.rendering
 
-import com.mist.algot.graphics.entities.Camera
+import com.mist.algot.graphics.entities.LockedCamera
 import com.mist.algot.graphics.entities.Entity
 import com.mist.algot.graphics.entities.Light
 import com.mist.algot.graphics.models.TexturedModel
@@ -13,7 +13,7 @@ class MasterRenderer {
 
     private final Map<TexturedModel, List<Entity>> entities = [:]
 
-    public void render(Light sun, Camera camera) {
+    public void render(Light sun, LockedCamera camera) {
         renderer.prepare()
         shader.start()
         shader.loadLight(sun)

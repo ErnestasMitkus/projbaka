@@ -1,11 +1,14 @@
 package com.mist.algot.temp
 
 import com.mist.algot.graphics.model.Vertex
-import com.mist.algot.graphics.rendering.FlatRenderer
+import com.mist.algot.graphics.utils.FileUtils
+import org.lwjgl.util.vector.Vector2f
+import org.newdawn.slick.opengl.Texture
+import org.newdawn.slick.opengl.TextureLoader
 
-class CubeObj {
+class CubeObj implements RenderableObj {
 
-    static float[] vertices = [
+    static float[] STATIC_vertices = [
         -0.5f,0.5f,-0.5f,
         -0.5f,-0.5f,-0.5f,
         0.5f,-0.5f,-0.5f,
@@ -36,7 +39,7 @@ class CubeObj {
         0.5f,-0.5f,-0.5f,
         0.5f,-0.5f,0.5f];
 
-    static final float[] textureCoords = [
+    static final float[] STATIC_textureCoords = [
         0,0,
         0,1,
         1,1,
@@ -62,7 +65,7 @@ class CubeObj {
         1,1,
         1,0];
 
-    static final int[] indices = [
+    static final int[] STATIC_indices = [
         0,1,3,
         3,1,2,
         4,5,7,
@@ -76,16 +79,38 @@ class CubeObj {
         20,21,23,
         23,21,22];
 
-    public void render(FlatRenderer renderer) {
-        for (int i = 0; i < indices.length; i+= 3) {
-            int vert1Loc = indices[i]
-            int vert2Loc = indices[i+1]
-            int vert3Loc = indices[i+2]
-            Vertex v1 = new Vertex(vertices[vert1Loc], vertices[vert1Loc+1], vertices[vert1Loc+2])
-            Vertex v2 = new Vertex(vertices[vert2Loc], vertices[vert2Loc+1], vertices[vert2Loc+2])
-            Vertex v3 = new Vertex(vertices[vert3Loc], vertices[vert3Loc+1], vertices[vert3Loc+2])
+    private final List<Vertex> vertices
+    private final List<Indice> indices
+    private final List<Vector2f> textureCoords
 
-            renderer.render([v1, v2, v3])
-        }
+    private final int textureId
+
+    public CubeObj(String fileName) {
+        vertices = ObjHelpers.transformToList(STATIC_vertices)
+        indices = ObjHelpers.transformToList(STATIC_indices)
+        textureCoords = ObjHelpers.transformTextureCoordsToList(STATIC_textureCoords)
+
+        Texture texture = TextureLoader.getTexture("PNG", FileUtils.loadFile(fileName))
+        textureId = texture.textureID
+    }
+
+    @Override
+    List<Vertex> getVertices() {
+        vertices
+    }
+
+    @Override
+    List<Indice> getIndices() {
+        indices
+    }
+
+    @Override
+    List<Vector2f> getTextureCoords() {
+        textureCoords
+    }
+
+    @Override
+    int getTextureId() {
+        textureId
     }
 }
