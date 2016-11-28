@@ -1,5 +1,6 @@
 package com.mist.algot.graphics.rendering
 
+import com.mist.algot.graphics.utils.PerformanceManager
 import org.lwjgl.LWJGLException
 import org.lwjgl.Sys
 import org.lwjgl.opengl.ContextAttribs
@@ -12,11 +13,10 @@ class DisplayManager {
 
     public static final int WIDTH = 1280
     public static final int HEIGHT = 720
-    public static final int FPS = 60
+    public static final int FPS = 120
     public static final String TITLE = "Algorithm Testing"
 
-    private static long lastFrameTime;
-    private static float delta;
+    private static PerformanceManager performanceManager
 
     public static void createDisplay() {
         createDisplay(null)
@@ -39,37 +39,39 @@ class DisplayManager {
             Display.setLocation(0, 0)
             Display.setTitle(TITLE)
             Display.create(new PixelFormat(), attribs)
+
+            performanceManager = new PerformanceManager(1000)
         } catch (LWJGLException e) {
             e.printStackTrace()
         }
 
         GL11.glViewport(0, 0, WIDTH, HEIGHT)
-        lastFrameTime = getCurrentTime()
+    }
+
+    public static PerformanceManager getPerformanceManager() {
+        performanceManager
+    }
+
+    public static void prepare() {
+        performanceManager.registerFrame()
     }
 
     public static void updateDisplay() {
+        if (performanceManager.periodPassed()) {
+            performanceManager.flush()
+        }
         Display.sync(FPS)
         Display.update()
-        long currentFrameTime = getCurrentTime()
-        delta = (currentFrameTime - lastFrameTime) / 1000f
-        lastFrameTime = currentFrameTime
-    }
-
-    public static float getFrameTimeSeconds() {
-        return delta
     }
 
     public static void closeDisplay() {
         Display.destroy()
     }
 
-    private static long getCurrentTime() {
-        return Sys.getTime()*1000 / Sys.getTimerResolution()
-    }
-
     public static class Version {
         private final int major
         private final int minor
+
         public Version(int major, int minor) {
             this.major = major
             this.minor = minor

@@ -13,6 +13,7 @@ import org.lwjgl.util.vector.Matrix4f
 import static com.mist.algot.graphics.rendering.Loader.NORMALS_ATTRIB_INDEX
 import static com.mist.algot.graphics.rendering.Loader.TEXTURE_COORDINATES_ATTRIB_INDEX
 import static com.mist.algot.graphics.rendering.Loader.VERTICES_ATTRIB_INDEX
+import static com.mist.algot.graphics.utils.OpenGLHelpers.rebindIndices
 
 class Renderer {
 
@@ -51,13 +52,15 @@ class Renderer {
                 def rawModel = model.rawModel
 
                 GL30.glBindVertexArray(rawModel.vaoId)
+                int[] indices = rawModel.indices
+                rebindIndices(rawModel.indicesVbo, indices)
 
                 staticShader.loadTransformationMatrix(entity.transformationMatrix)
                 staticShader.loadShineVariables(texture.shineDamper, texture.reflectivity)
 
                 GL13.glActiveTexture(GL13.GL_TEXTURE0)
                 GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture.id)
-                GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
+                GL11.glDrawElements(GL11.GL_TRIANGLES, indices.length, GL11.GL_UNSIGNED_INT, 0)
             }
         }
     }

@@ -13,6 +13,9 @@ import org.newdawn.slick.opengl.TextureLoader
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
+import static com.mist.algot.graphics.utils.BuffersUtils.storeDataInFloatBuffer
+import static com.mist.algot.graphics.utils.BuffersUtils.storeDataInIntBuffer
+
 class Loader {
 
     private static final int VECTOR_2_SIZE = 2
@@ -27,14 +30,28 @@ class Loader {
     private final List<Integer> vbos = []
     private final List<Integer> textures = []
 
+//    RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
+//        int vaoId = createVAO()
+//        bindIndicesBuffer(indices)
+//        storeDataInAttributeList(VERTICES_ATTRIB_INDEX, VECTOR_3_SIZE, positions)
+//        storeDataInAttributeList(TEXTURE_COORDINATES_ATTRIB_INDEX, VECTOR_2_SIZE, textureCoords)
+//        storeDataInAttributeList(NORMALS_ATTRIB_INDEX, VECTOR_3_SIZE, normals)
+//        unbindVAO()
+//        return new RawModel(vaoId, indices)
+//    }
+
     RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
         int vaoId = createVAO()
-        bindIndicesBuffer(indices)
+
+        int indicesVbo = GL15.glGenBuffers()
+        vbos.add(indicesVbo)
+        GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, indicesVbo)
+
         storeDataInAttributeList(VERTICES_ATTRIB_INDEX, VECTOR_3_SIZE, positions)
         storeDataInAttributeList(TEXTURE_COORDINATES_ATTRIB_INDEX, VECTOR_2_SIZE, textureCoords)
         storeDataInAttributeList(NORMALS_ATTRIB_INDEX, VECTOR_3_SIZE, normals)
         unbindVAO()
-        return new RawModel(vaoId, indices.length)
+        return new RawModel(vaoId, indicesVbo, indices)
     }
 
     public int loadTexture(String fileName) {
@@ -80,27 +97,16 @@ class Loader {
         GL30.glBindVertexArray(0)
     }
 
-    private void bindIndicesBuffer(int[] indices) {
+    private int bindIndicesBuffer(int[] indices) {
         int vboId = GL15.glGenBuffers()
         vbos.add(vboId)
         GL15.glBindBuffer(GL15.GL_ELEMENT_ARRAY_BUFFER, vboId)
 
         def buffer = storeDataInIntBuffer(indices)
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW)
+        return vboId
     }
 
-    private static IntBuffer storeDataInIntBuffer(int[] data) {
-        def buffer = BufferUtils.createIntBuffer(data.length)
-        buffer.put(data)
-        buffer.flip()
-        buffer
-    }
 
-    private static FloatBuffer storeDataInFloatBuffer(float[] data) {
-        def buffer = BufferUtils.createFloatBuffer(data.length)
-        buffer.put(data)
-        buffer.flip()
-        buffer
-    }
 
 }

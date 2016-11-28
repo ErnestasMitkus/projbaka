@@ -38,7 +38,8 @@ class Main {
         MasterRenderer renderer = new MasterRenderer()
 
         while (!Display.isCloseRequested()) {
-            entity.increaseRotation(0, 1, 0)
+            DisplayManager.prepare()
+            entity.increaseRotation(0, (float)(60 * DisplayManager.frameTimeSeconds), 0)
             camera.move()
 
             renderer.processEntity(entity)
