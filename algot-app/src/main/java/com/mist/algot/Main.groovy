@@ -39,7 +39,7 @@ class Main {
 
         while (!Display.isCloseRequested()) {
             DisplayManager.prepare()
-            entity.increaseRotation(0, (float)(60 * DisplayManager.frameTimeSeconds), 0)
+            entity.increaseRotation(0, (float) (60 * DisplayManager.delta), 0)
             camera.move()
 
             renderer.processEntity(entity)

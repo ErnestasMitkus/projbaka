@@ -1,12 +1,13 @@
 package com.mist.algot.temp
 
+import com.mist.algot.graphics.model.Indice
 import com.mist.algot.graphics.model.Vertex
 import com.mist.algot.graphics.utils.FileUtils
 import org.lwjgl.util.vector.Vector2f
 import org.newdawn.slick.opengl.Texture
 import org.newdawn.slick.opengl.TextureLoader
 
-class TestObj implements RenderableObj {
+class TestObj {
 
     static float[] STATIC_vertices = [
         -0.5f, -0.5f, 0,
@@ -39,25 +40,5 @@ class TestObj implements RenderableObj {
 
         Texture texture = TextureLoader.getTexture("PNG", FileUtils.loadFile(fileName))
         textureId = texture.textureID
-    }
-
-    @Override
-    List<Vertex> getVertices() {
-        vertices
-    }
-
-    @Override
-    List<Indice> getIndices() {
-        indices
-    }
-
-    @Override
-    List<Vector2f> getTextureCoords() {
-        textureCoords
-    }
-
-    @Override
-    int getTextureId() {
-       textureId
     }
 }

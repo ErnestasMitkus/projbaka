@@ -8,10 +8,12 @@ import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
 
+import static com.mist.algot.graphics.rendering.DisplayManager.getPerformanceManager
+
 class FreeLookCamera implements Camera {
 
-    private static final float MOVEMENT_SPEED = 0.05f
-    private static final float ROTATIONAL_SPEED = 0.002f
+    private static final float MOVEMENT_SPEED = 0.05f * 60
+    private static final float ROTATIONAL_SPEED = 0.002f * 60
     private static final Vector3f UP = new Vector3f(0, 1f, 0)
 
     private Vector3f position = new Vector3f()
@@ -27,23 +29,24 @@ class FreeLookCamera implements Camera {
     }
 
     private void updateMovement() {
+        float delta = performanceManager.delta
         if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            moveForward(MOVEMENT_SPEED)
+            moveForward((float)(MOVEMENT_SPEED * delta))
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            moveForward(-MOVEMENT_SPEED)
+            moveForward((float) (-MOVEMENT_SPEED * delta))
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            moveRight(MOVEMENT_SPEED)
+            moveRight((float)(MOVEMENT_SPEED * delta))
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            moveRight(-MOVEMENT_SPEED)
+            moveRight((float)(-MOVEMENT_SPEED * delta))
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
-            moveUp(MOVEMENT_SPEED)
+            moveUp((float)(MOVEMENT_SPEED * delta))
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) {
-            moveUp(-MOVEMENT_SPEED)
+            moveUp((float)(-MOVEMENT_SPEED * delta))
         }
     }
 
@@ -68,10 +71,11 @@ class FreeLookCamera implements Camera {
         }
         int dx = Mouse.getDX()
         int dy = Mouse.getDY()
+        float delta = performanceManager.delta
 
         Vector3f toRotateAround = Vector3f.cross(viewDirection, UP, null)
-        Matrix4f rotator = new Matrix4f().rotate((float)(-dx * ROTATIONAL_SPEED), UP)
-                                         .rotate((float)(dy * ROTATIONAL_SPEED), toRotateAround)
+        Matrix4f rotator = new Matrix4f().rotate((float)(-dx * ROTATIONAL_SPEED * delta), UP)
+                                         .rotate((float)(dy * ROTATIONAL_SPEED * delta), toRotateAround)
         Matrix3f rotatorReduced = Maths.reduce(rotator)
         viewDirection = Maths.multiply(rotatorReduced, viewDirection)
     }

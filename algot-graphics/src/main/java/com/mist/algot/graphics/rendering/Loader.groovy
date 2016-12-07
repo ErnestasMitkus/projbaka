@@ -1,5 +1,6 @@
 package com.mist.algot.graphics.rendering
 
+import com.mist.algot.graphics.model.Mesh
 import com.mist.algot.graphics.utils.FileUtils
 import com.mist.algot.graphics.models.RawModel
 import org.lwjgl.BufferUtils
@@ -15,6 +16,7 @@ import java.nio.IntBuffer
 
 import static com.mist.algot.graphics.utils.BuffersUtils.storeDataInFloatBuffer
 import static com.mist.algot.graphics.utils.BuffersUtils.storeDataInIntBuffer
+import static com.mist.algot.graphics.utils.ModelsHelpers.createMesh
 
 class Loader {
 
@@ -30,16 +32,6 @@ class Loader {
     private final List<Integer> vbos = []
     private final List<Integer> textures = []
 
-//    RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
-//        int vaoId = createVAO()
-//        bindIndicesBuffer(indices)
-//        storeDataInAttributeList(VERTICES_ATTRIB_INDEX, VECTOR_3_SIZE, positions)
-//        storeDataInAttributeList(TEXTURE_COORDINATES_ATTRIB_INDEX, VECTOR_2_SIZE, textureCoords)
-//        storeDataInAttributeList(NORMALS_ATTRIB_INDEX, VECTOR_3_SIZE, normals)
-//        unbindVAO()
-//        return new RawModel(vaoId, indices)
-//    }
-
     RawModel loadToVAO(float[] positions, float[] textureCoords, float[] normals, int[] indices) {
         int vaoId = createVAO()
 
@@ -51,10 +43,10 @@ class Loader {
         storeDataInAttributeList(TEXTURE_COORDINATES_ATTRIB_INDEX, VECTOR_2_SIZE, textureCoords)
         storeDataInAttributeList(NORMALS_ATTRIB_INDEX, VECTOR_3_SIZE, normals)
         unbindVAO()
-        return new RawModel(vaoId, indicesVbo, indices)
+        return new RawModel(vaoId, indicesVbo, createMesh(positions, textureCoords, normals, indices))
     }
 
-    public int loadTexture(String fileName) {
+    int loadTexture(String fileName) {
         Texture texture
         texture = TextureLoader.getTexture("PNG", FileUtils.loadFile(fileName))
         int textureId = texture.textureID

@@ -13,6 +13,8 @@ import org.lwjgl.util.vector.Matrix4f
 import static com.mist.algot.graphics.rendering.Loader.NORMALS_ATTRIB_INDEX
 import static com.mist.algot.graphics.rendering.Loader.TEXTURE_COORDINATES_ATTRIB_INDEX
 import static com.mist.algot.graphics.rendering.Loader.VERTICES_ATTRIB_INDEX
+import static com.mist.algot.graphics.utils.ModelsHelpers.extractIndices
+import static com.mist.algot.graphics.utils.ModelsHelpers.transformToPrimitiveIndices
 import static com.mist.algot.graphics.utils.OpenGLHelpers.rebindIndices
 
 class Renderer {
@@ -52,7 +54,7 @@ class Renderer {
                 def rawModel = model.rawModel
 
                 GL30.glBindVertexArray(rawModel.vaoId)
-                int[] indices = rawModel.indices
+                int[] indices = transformToPrimitiveIndices(extractIndices(rawModel.mesh.faces))
                 rebindIndices(rawModel.indicesVbo, indices)
 
                 staticShader.loadTransformationMatrix(entity.transformationMatrix)

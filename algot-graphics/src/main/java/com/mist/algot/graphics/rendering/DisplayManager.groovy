@@ -13,7 +13,7 @@ class DisplayManager {
 
     public static final int WIDTH = 1280
     public static final int HEIGHT = 720
-    public static final int FPS = 120
+    public static final int FPS = 60
     public static final String TITLE = "Algorithm Testing"
 
     private static PerformanceManager performanceManager
@@ -58,10 +58,15 @@ class DisplayManager {
 
     public static void updateDisplay() {
         if (performanceManager.periodPassed()) {
+            println "FPS: $performanceManager.frames"
             performanceManager.flush()
         }
-        Display.sync(FPS)
+//        Display.sync(FPS)
         Display.update()
+    }
+
+    static float getDelta() {
+        performanceManager.delta
     }
 
     public static void closeDisplay() {

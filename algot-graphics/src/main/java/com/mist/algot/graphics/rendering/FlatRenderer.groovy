@@ -1,9 +1,7 @@
 package com.mist.algot.graphics.rendering
 
 import com.mist.algot.graphics.entities.Camera
-import com.mist.algot.graphics.entities.LockedCamera
-import com.mist.algot.graphics.model.TexturedVertex
-import com.mist.algot.graphics.model.VTriangle
+import com.mist.algot.graphics.model.Face
 import com.mist.algot.graphics.model.Vertex
 import com.mist.algot.graphics.toolbox.Maths
 import org.lwjgl.opengl.Display
@@ -70,7 +68,7 @@ class FlatRenderer {
         GL11.glDisable(GL11.GL_DEPTH_TEST)
     }
 
-    void renderTriangles(List<VTriangle> triangles) {
+    void renderTriangles(List<Face> triangles) {
         GL11.glBegin(GL11.GL_TRIANGLES)
         triangles.each {
             drawVertex(it.first)
@@ -80,7 +78,7 @@ class FlatRenderer {
         GL11.glEnd()
     }
 
-    void renderLines(List<VTriangle> triangles) {
+    void renderLines(List<Face> triangles) {
         enableWireframe()
         renderTriangles(triangles)
         disableWireframe()
@@ -93,7 +91,7 @@ class FlatRenderer {
         GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
     }
 
-    void renderTextured(List<VTriangle> triangles) {
+    void renderTextured(List<Face> triangles) {
         GL11.glBegin(GL11.GL_TRIANGLES)
 
         triangles.each {
@@ -105,13 +103,11 @@ class FlatRenderer {
         GL11.glEnd()
     }
 
-    void drawTexturedVertex(TexturedVertex vertex) {
-        GL11.glTexCoord2f(vertex.texCoordX, vertex.texCoordY)
-        drawVertex(vertex)
-    }
-
     void drawVertex(Vertex vertex) {
-        def vec = new Vector4f(vertex.x, vertex.y, vertex.z, 1f)
+        if (vertex.textured) {
+            GL11.glTexCoord2f(vertex.textureCoords.x, vertex.textureCoords.y)
+        }
+        def vec = new Vector4f(vertex.position.x, vertex.position.y, vertex.position.z, 1f)
         def transformed = applyTransformations(vec)
         float x = transformed.x,
               y = transformed.y,
