@@ -24,8 +24,10 @@ class Main {
 
         Loader loader = new Loader()
 
-        RawModel squareModel = OBJLoader.loadObjModel("/objects/stall.obj", loader)
-        ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/stallTexture.png"))
+        RawModel squareModel = OBJLoader.loadObjModel("/objects/dragon.obj", loader)
+        ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/lamp.png"))
+//        RawModel squareModel = OBJLoader.loadObjModel("/objects/simpleCube.obj", loader)
+//        ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/white.png"))
         texture.shineDamper = 10
         texture.reflectivity = 1
         TexturedModel texturedModel = new TexturedModel(squareModel, texture)

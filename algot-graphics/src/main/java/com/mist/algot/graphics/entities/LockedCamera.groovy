@@ -9,7 +9,7 @@ import static com.mist.algot.graphics.rendering.DisplayManager.performanceManage
 
 class LockedCamera implements Camera {
 
-    private static final float CAM_SPEED = 0.05f * 60
+    private static final float CAM_SPEED = 0.15f * 60
 
     private Vector3f position = new Vector3f()
     private float pitch // how high or low the camera is aimed

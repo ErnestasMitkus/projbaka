@@ -87,9 +87,7 @@ class ModelsHelpers {
     }
 
     static List<Indice> extractIndices(List<Face> faces) {
-        Lists.newArrayList(Iterables.transform(faces, { Face face ->
-            face.indice
-        } as Function<Face, Indice>))
+        faces.indice
     }
 
     static Mesh createMesh(float[] positions, float[] textureCoords, float[] normals, int[] indices) {

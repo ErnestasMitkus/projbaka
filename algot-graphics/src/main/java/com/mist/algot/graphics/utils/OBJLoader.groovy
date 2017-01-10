@@ -1,5 +1,6 @@
 package com.mist.algot.graphics.utils
 
+import com.mist.algot.graphics.model.Indice
 import com.mist.algot.graphics.models.RawModel
 import com.mist.algot.graphics.rendering.Loader
 import org.lwjgl.util.vector.Vector2f
@@ -16,11 +17,13 @@ class OBJLoader {
         List<Vector3f> normals = []
         List<Integer> indices = []
 
+        int lineNo = 0
         try {
-
             while (true) {
                 line = reader.readLine()
-                String[] currentLine = line.split(" ")
+                lineNo++
+
+                String[] currentLine = line.replaceAll(/\s+/, " ").split(" ")
                 if (line.startsWith("v ")) {
 					Vector3f vertex = new Vector3f(
                             (float) Float.valueOf(currentLine[1]),
@@ -46,15 +49,22 @@ class OBJLoader {
             float[] textureArray = new float[vertices.size() * 2];
             float[] normalsArray = new float[vertices.size() * 3];
 
-            while (line != null && line.startsWith("f ")) {
-				String[] currentLine = line.split(" ");
-				String[] vertex1 = currentLine[1].split("/");
-				String[] vertex2 = currentLine[2].split("/");
-				String[] vertex3 = currentLine[3].split("/");
-				processVertex(vertex1, indices, textures, normals, textureArray, normalsArray)
-				processVertex(vertex2, indices, textures, normals, textureArray, normalsArray)
-				processVertex(vertex3, indices, textures, normals, textureArray, normalsArray)
+            while (line != null) {
+                if (line.startsWith("f ")) {
+                    String[] currentLine = line.replaceAll(/\s+/, " ").split(" ");
+                    String[] vertex1 = currentLine[1].split("/");
+                    String[] vertex2 = currentLine[2].split("/");
+                    String[] vertex3 = currentLine[3].split("/");
+                    processVertex(vertex1, indices, textures, normals, textureArray, normalsArray)
+                    processVertex(vertex2, indices, textures, normals, textureArray, normalsArray)
+                    processVertex(vertex3, indices, textures, normals, textureArray, normalsArray)
+
+                    int n1 = Integer.parseInt(vertex1[2])
+                    int n2 = Integer.parseInt(vertex1[2])
+                    int n3 = Integer.parseInt(vertex1[2])
+                }
 				line = reader.readLine();
+                lineNo++
 			}
 
 
@@ -74,6 +84,7 @@ class OBJLoader {
 
             return loader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray)
         } catch (Exception e) {
+            println "Exception occured in obj file line: $lineNo"
             throw new RuntimeException(e)
         } finally {
             reader.close()
