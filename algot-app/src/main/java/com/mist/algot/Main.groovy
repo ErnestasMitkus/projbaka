@@ -23,8 +23,8 @@ class Main {
 
         Loader loader = new Loader()
 
-        RawModel squareModel = OBJLoader.loadObjModel("/objects/dragon.obj", loader)
-        ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/white.png"))
+        RawModel squareModel = OBJLoader.loadObjModel("/objects/simpleCube.obj", loader)
+        ModelTexture texture = new ModelTexture(loader.loadTexture("/textures/doge.png"))
         texture.shineDamper = 10
         texture.reflectivity = 1
         TexturedModel texturedModel = new TexturedModel(squareModel, texture)
@@ -37,8 +37,9 @@ class Main {
         MasterRenderer renderer = new MasterRenderer()
 
         while (!Display.isCloseRequested()) {
-            entity.increaseRotation(0, 1, 0)
-            camera.move()
+            DisplayManager.prepare()
+            entity.increaseRotation(0, (float) (60 * DisplayManager.delta), 0)
+            camera.move(DisplayManager.delta)
 
             renderer.processEntity(entity)
 

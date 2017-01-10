@@ -1,5 +1,6 @@
 package com.mist.algot.graphics.rendering
 
+import com.mist.algot.graphics.utils.PerformanceManager
 import org.lwjgl.LWJGLException
 import org.lwjgl.Sys
 import org.lwjgl.opengl.ContextAttribs
@@ -17,6 +18,8 @@ class DisplayManager {
 
     private static long lastFrameTime;
     private static float delta;
+
+    private static final PerformanceManager performanceManager = new PerformanceManager(1000)
 
     public static void createDisplay(){
         ContextAttribs attribs = new ContextAttribs(3, 0) // TODO: 3, 2 on windows
@@ -37,15 +40,25 @@ class DisplayManager {
     }
 
     public static void updateDisplay() {
-        Display.sync(FPS)
+        if (performanceManager.periodPassed()) {
+            println "FPS: $performanceManager.frames"
+            performanceManager.flush()
+        }
+
+//        Display.sync(FPS)
         Display.update()
-        long currentFrameTime = getCurrentTime()
-        delta = (currentFrameTime - lastFrameTime) / 1000f
-        lastFrameTime = currentFrameTime
     }
 
-    public static float getFrameTimeSeconds() {
-        return delta
+    public static void prepare() {
+        performanceManager.registerFrame()
+    }
+
+    public static float getDelta() {
+        performanceManager.delta
+    }
+
+    static PerformanceManager getPerformanceManager() {
+        performanceManager
     }
 
     public static void closeDisplay() {
