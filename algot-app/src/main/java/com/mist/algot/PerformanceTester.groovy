@@ -2,12 +2,14 @@ package com.mist.algot
 
 import com.mist.algot.graphics.utils.PerformanceManager
 
+import java.util.concurrent.TimeUnit
+
 import static com.mist.algot.Reporter.printLine
 
 class PerformanceTester {
 
-    private static final int EACH_TEST_DURATION = 30 * 1000 // 5min
-    private static final int WARMUP_TIME = 10 * 1000 // 10s
+    private static final int EACH_TEST_DURATION = TimeUnit.MINUTES.toMillis(5)
+    private static final int WARMUP_TIME = TimeUnit.SECONDS.toMillis(10)
 
     private static final List<PerformanceTests> tests
 
@@ -78,6 +80,7 @@ class PerformanceTester {
         printLine "All FPS values: $unorderedFps"
         printLine "------------------------------"
         printLine ""
+        Reporter.flush()
     }
 
     static class TestEntry {

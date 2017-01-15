@@ -10,19 +10,19 @@ enum PerformanceTests {
         HidingManager.disableZBuffer()
         HidingManager.disablePainters()
     }),
-//    ONLY_BACKFACE_CULLING({
-//        HidingManager.enableBackFaceCulling()
-//        HidingManager.disableZBuffer()
-//        HidingManager.disablePainters()
-//    }),
-//    ONLY_Z_BUFFER({
-//        HidingManager.disableBackFaceCulling()
-//        HidingManager.enableZBuffer()
-//    }),
-//    BACKFACE_AND_Z_BUFFER({
-//        HidingManager.enableBackFaceCulling()
-//        HidingManager.enableZBuffer()
-//    })
+    ONLY_BACKFACE_CULLING({
+        HidingManager.enableBackFaceCulling()
+        HidingManager.disableZBuffer()
+        HidingManager.disablePainters()
+    }),
+    ONLY_Z_BUFFER({
+        HidingManager.disableBackFaceCulling()
+        HidingManager.enableZBuffer()
+    }),
+    BACKFACE_AND_Z_BUFFER({
+        HidingManager.enableBackFaceCulling()
+        HidingManager.enableZBuffer()
+    })
 
 
     private final TestEntry testEntry

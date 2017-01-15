@@ -24,18 +24,18 @@ class Main {
         Scenarios.loadModels(loader)
         MasterRenderer renderer = new MasterRenderer()
         Camera camera = new Camera()
-        Light light = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1))
-//        Light light = new Light(new Vector3f(0, 20, 40), new Vector3f(1, 1, 1))
+//        Light light = new Light(new Vector3f(0, 0, -20), new Vector3f(1, 1, 1))
+        Light light = new Light(new Vector3f(0, 20, 40), new Vector3f(1, 1, 1))
 
 
 
         List<Entity> entities = args.length > 1 ?
                 parseScenario(args[1]) :
-//                Scenarios.cube()
-                { throw new RuntimeException("No scenario specified.") }()
+                Scenarios.cube()
+//                { throw new RuntimeException("No scenario specified.") }()
 
-//        mainGameLoop(camera, light, renderer, entities)
-        PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
+        mainGameLoop(camera, light, renderer, entities)
+//        PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
 
         renderer.cleanup()
         loader.cleanup()
