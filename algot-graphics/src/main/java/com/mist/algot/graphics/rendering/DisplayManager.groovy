@@ -16,8 +16,10 @@ class DisplayManager {
     public static final int FPS = 60
     public static final String TITLE = "Algorithm Testing"
 
-    private static long lastFrameTime;
-    private static float delta;
+    private static long lastFrameTime
+    private static float delta
+
+    private static boolean reportFPS = false
 
     private static final PerformanceManager performanceManager = new PerformanceManager(1000)
 
@@ -41,7 +43,9 @@ class DisplayManager {
 
     public static void updateDisplay() {
         if (performanceManager.periodPassed()) {
-            println "FPS: $performanceManager.frames"
+            if (reportFPS) {
+                println "FPS: $performanceManager.frames"
+            }
             performanceManager.flush()
         }
 
@@ -69,5 +73,8 @@ class DisplayManager {
         return Sys.getTime()*1000 / Sys.getTimerResolution()
     }
 
+    static void setReportFPS(boolean reportFPS) {
+        this.reportFPS = reportFPS
+    }
 
 }

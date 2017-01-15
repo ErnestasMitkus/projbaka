@@ -27,7 +27,7 @@ class Entity {
         increasePosition(pos.x, pos.y, pos.z)
     }
 
-    public void increasePosition(float dx, float dy, dz) {
+    public void increasePosition(float dx, float dy, float dz) {
         position.x += dx
         position.y += dy
         position.z += dz
@@ -37,7 +37,7 @@ class Entity {
         increaseRotation(pos.x, pos.y, pos.z)
     }
 
-    public void increaseRotation(float dx, float dy, dz) {
+    public void increaseRotation(float dx, float dy, float dz) {
         rotation.x += dx
         rotation.y += dy
         rotation.z += dz

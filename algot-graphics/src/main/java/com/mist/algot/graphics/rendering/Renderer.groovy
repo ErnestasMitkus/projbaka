@@ -24,9 +24,6 @@ class Renderer {
     private final Matrix4f projectionMatrix
 
     Renderer(StaticShader staticShader) {
-        GL11.glEnable(GL11.GL_CULL_FACE)
-        GL11.glCullFace(GL11.GL_BACK)
-
         projectionMatrix = createProjectionMatrix()
         this.staticShader = staticShader
         staticShader.start()
@@ -35,16 +32,16 @@ class Renderer {
     }
 
     static void prepare() {
-        // back culling
-//        GL11.glEnable(GL11.GL_CULL_FACE)
-//        GL11.glCullFace(GL11.GL_BACK)
+        if (HidingManager.backFaceCullingEnabled) {
+            GL11.glCullFace(GL11.GL_BACK)
+        }
 
-        // painters method (THIS OR Z BUFFER)
-//        GL11.glDepthFunc(GL11.GL_NEVER);
+        if (HidingManager.ZBufferEnabled) {
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
+        } else {
+            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT)
+        }
 
-        // z buffer method
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
         GL11.glClearColor(0.3f, 0, 0, 1)
     }
 
