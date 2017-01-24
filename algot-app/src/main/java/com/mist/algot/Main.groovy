@@ -14,6 +14,7 @@ class Main {
 
     static void main(String[] args) {
         System.setProperty("org.lwjgl.librarypath", determineNativesPath())
+//        args = ["/home/ernestas/Desktop/bakatest/foo.txt"]
         if (args.length > 0) {
             Reporter.setupReporter(args[0])
         }
@@ -48,6 +49,9 @@ class Main {
             trees: Scenarios.&trees,
             stalls: Scenarios.&stalls,
             dragons: Scenarios.&dragons,
+            dragonsFF: Scenarios.&dragonsOverlapFrontFirst,
+            dragonsBF: Scenarios.&dragonsOverlapBackFirst,
+            stallsNO: Scenarios.&stallsNoOverlap
         ]
         scenarios[scenario].call()
     }

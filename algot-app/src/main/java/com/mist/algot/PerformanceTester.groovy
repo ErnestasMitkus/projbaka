@@ -8,8 +8,9 @@ import static com.mist.algot.Reporter.printLine
 
 class PerformanceTester {
 
-    private static final int EACH_TEST_DURATION = TimeUnit.MINUTES.toMillis(5)
-    private static final int WARMUP_TIME = TimeUnit.SECONDS.toMillis(10)
+    private static final int EACH_TEST_DURATION = TimeUnit.MINUTES.toMillis(20)
+//    private static final int EACH_TEST_DURATION = TimeUnit.SECONDS.toMillis(30)
+    private static final int WARMUP_TIME = TimeUnit.MINUTES.toMillis(2)
 
     private static final List<PerformanceTests> tests
 
@@ -80,6 +81,7 @@ class PerformanceTester {
         printLine "All FPS values: $unorderedFps"
         printLine "------------------------------"
         printLine ""
+
         Reporter.flush()
     }
 

@@ -24,6 +24,7 @@ class Reporter {
     }
 
     static void flush() {
-        !instance.filePrintStream ?: instance.flush()
+        System.out.flush()
+        !instance.filePrintStream ?: instance.filePrintStream.flush()
     }
 }

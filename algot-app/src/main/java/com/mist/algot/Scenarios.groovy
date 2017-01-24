@@ -62,6 +62,19 @@ class Scenarios {
         }
     }
 
+    static List<Entity> dragonsOverlapFrontFirst() {
+        [
+            new Vector3f(0, -5, -25),
+            new Vector3f(0, 0, -50)
+        ].collect {
+            new Entity(DRAGON_MODEL, it)
+        }
+    }
+
+    static List<Entity> dragonsOverlapBackFirst() {
+        dragonsOverlapFrontFirst().reverse()
+    }
+
     static List<Entity> trees() {
         def bgTrees = (-10..10).collect {
             [new Vector3f(it*20 as float, (-30-Math.abs(it)) as float, -400),
@@ -98,6 +111,21 @@ class Scenarios {
             new Vector3f(30, -3, -50),
             new Vector3f(-10, -5, -12),
             new Vector3f(10, -5, -12),
+        ].collect {
+            new Entity(STALL_MODEL, it)
+        }
+    }
+
+    static List<Entity> stallsNoOverlap() {
+        [
+            new Vector3f(0, -10, -50),
+            new Vector3f(-27, 10, -50),
+            new Vector3f(-15, 10, -50),
+            new Vector3f(-0, 10, -50),
+            new Vector3f(15, 10, -50),
+            new Vector3f(27, 10, -50),
+            new Vector3f(-15, -10, -50),
+            new Vector3f(15, -10, -50),
         ].collect {
             new Entity(STALL_MODEL, it)
         }
