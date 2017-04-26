@@ -1,9 +1,11 @@
-#version 140
+#version 150
 
-in vec2 pass_textureCoords;
-in vec3 surfaceNormal;
-in vec3 toLightVector;
-in vec3 toCameraVector;
+in VertexData {
+  vec2 pass_textureCoords;
+  vec3 surfaceNormal;
+  vec3 toLightVector;
+  vec3 toCameraVector;
+} VertexIn;
 
 out vec4 out_Color;
 
@@ -13,14 +15,14 @@ uniform float shineDamper;
 uniform float reflectivity;
 
 void main(void) {
-    vec3 unitNormal = normalize(surfaceNormal);
-    vec3 unitLightVector = normalize(toLightVector);
+    vec3 unitNormal = normalize(VertexIn.surfaceNormal);
+    vec3 unitLightVector = normalize(VertexIn.toLightVector);
 
     float nDot1 = dot(unitNormal, unitLightVector);
     float brightness = max(nDot1, 0.2);
     vec3 diffuse = brightness * lightColor;
 
-    vec3 unitCameraVector = normalize(toCameraVector);
+    vec3 unitCameraVector = normalize(VertexIn.toCameraVector);
     vec3 lightDirection = -unitLightVector;
     vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
 
@@ -29,5 +31,5 @@ void main(void) {
     float dampedFactor = pow(specularFactor, shineDamper);
     vec3 finalSpecular = dampedFactor * reflectivity * lightColor;
 
-    out_Color = vec4(diffuse, 1.0) * texture(textureSampler, pass_textureCoords) + vec4(finalSpecular, 1.0);
+    out_Color = vec4(diffuse, 1.0) * texture(textureSampler, VertexIn.pass_textureCoords) + vec4(finalSpecular, 1.0);
 }

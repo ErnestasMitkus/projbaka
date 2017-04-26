@@ -24,7 +24,7 @@ class DisplayManager {
     private static final PerformanceManager performanceManager = new PerformanceManager(1000)
 
     public static void createDisplay(){
-        ContextAttribs attribs = new ContextAttribs(3, 0) // TODO: 3, 2 on windows
+        ContextAttribs attribs = new ContextAttribs(3, 2) // TODO: 3, 2 on windows
             .withForwardCompatible(true)
 //            .withProfileCore(true)
 

@@ -8,6 +8,7 @@ import org.lwjgl.util.vector.Matrix4f
 class StaticShader extends ShaderProgram {
 
     private static final String VERTEX_FILE = "/shaders/main.vert"
+    private static final String GEOMETRY_FILE = "/shaders/main.geom"
     private static final String FRAGMENT_FILE = "/shaders/main.frag"
 
     private int location_transformationMatrix
@@ -19,7 +20,7 @@ class StaticShader extends ShaderProgram {
     private int location_reflectivity
 
     public StaticShader() {
-        super(VERTEX_FILE, FRAGMENT_FILE)
+        super(VERTEX_FILE, GEOMETRY_FILE, FRAGMENT_FILE)
     }
 
     @Override

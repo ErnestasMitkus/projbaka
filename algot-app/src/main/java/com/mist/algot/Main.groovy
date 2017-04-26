@@ -12,7 +12,7 @@ import org.lwjgl.util.vector.Vector3f
 
 class Main {
 
-    static void main(String[] args) {
+    static void main(String[] args) { // example program arguments foo.txt trees
         System.setProperty("org.lwjgl.librarypath", determineNativesPath())
 //        args = ["/home/ernestas/Desktop/bakatest/foo.txt"]
         if (args.length > 0) {
@@ -32,7 +32,7 @@ class Main {
 
         List<Entity> entities = args.length > 1 ?
                 parseScenario(args[1]) :
-                Scenarios.cube()
+                Scenarios.stalls()
 //                { throw new RuntimeException("No scenario specified.") }()
 
         mainGameLoop(camera, light, renderer, entities)

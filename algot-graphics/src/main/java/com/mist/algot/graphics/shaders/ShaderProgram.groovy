@@ -4,6 +4,7 @@ import com.mist.algot.graphics.utils.FileUtils
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL32
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
 
@@ -13,16 +14,19 @@ abstract class ShaderProgram {
 
     private int programId
     private int vertexShaderId
+    private int geometryShaderId
     private int fragmentShaderId
 
     private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(4*4)
 
-    public ShaderProgram(String vertexFile, String fragmentFile) {
+    public ShaderProgram(String vertexFile, String geometryFile, String fragmentFile) {
         vertexShaderId = loadShader(vertexFile, GL20.GL_VERTEX_SHADER)
+        geometryShaderId = loadShader(geometryFile, GL32.GL_GEOMETRY_SHADER)
         fragmentShaderId = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER)
         programId = GL20.glCreateProgram()
 
         GL20.glAttachShader(programId, vertexShaderId)
+        GL20.glAttachShader(programId, geometryShaderId)
         GL20.glAttachShader(programId, fragmentShaderId)
         bindAttributes()
         GL20.glLinkProgram(programId)
@@ -47,8 +51,10 @@ abstract class ShaderProgram {
     void cleanup() {
         stop()
         GL20.glDetachShader(programId, vertexShaderId)
+        GL20.glDetachShader(programId, geometryShaderId)
         GL20.glDetachShader(programId, fragmentShaderId)
         GL20.glDeleteShader(vertexShaderId)
+        GL20.glDeleteShader(geometryShaderId)
         GL20.glDeleteShader(fragmentShaderId)
         GL20.glDeleteProgram(programId)
     }
@@ -96,6 +102,8 @@ abstract class ShaderProgram {
         switch(type) {
             case GL20.GL_VERTEX_SHADER:
                 return "vertex"
+            case GL32.GL_GEOMETRY_SHADER:
+                return "geometry"
             case GL20.GL_FRAGMENT_SHADER:
                 return "fragment"
             default:
