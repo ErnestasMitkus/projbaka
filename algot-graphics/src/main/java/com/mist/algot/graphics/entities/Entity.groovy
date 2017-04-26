@@ -55,11 +55,11 @@ class Entity {
         return rotation
     }
 
-    Vector3f getScale() {
-        return scale
-    }
-
     Matrix4f getTransformationMatrix() {
         Maths.createTransformationMatrix(position, rotation, scale)
+    }
+
+    Vector3f getScale() {
+        return scale
     }
 }

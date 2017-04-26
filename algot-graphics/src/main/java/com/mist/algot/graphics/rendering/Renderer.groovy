@@ -16,9 +16,9 @@ import static com.mist.algot.graphics.rendering.Loader.VERTICES_ATTRIB_INDEX
 
 class Renderer {
 
-    private static final float FOV = 70; // field of view
-    private static final float NEAR_PLANE = 0.1;
-    private static final float FAR_PLANE = 1000;
+    static final float FOV = 70 // field of view
+    static final float NEAR_PLANE = 15
+    static final float FAR_PLANE = 200
 
     private final StaticShader staticShader
     private final Matrix4f projectionMatrix
@@ -69,6 +69,8 @@ class Renderer {
 
     private static Matrix4f createProjectionMatrix() {
         float aspectRatio = (float) Display.displayMode.width / (float) Display.displayMode.height
+
+        aspectRatio = 444.44 / 250.0
         float xScale = (1f / Math.tan(Math.toRadians(FOV / 2f)))
         float yScale = xScale * aspectRatio
         float frustumLength = FAR_PLANE - NEAR_PLANE
@@ -90,4 +92,7 @@ class Renderer {
         attribs.forEach(GL20.&glDisableVertexAttribArray)
     }
 
+    Matrix4f getProjectionMatrix() {
+        return projectionMatrix
+    }
 }

@@ -1,9 +1,9 @@
 package com.mist.algot.graphics.shaders
 
-import com.mist.algot.graphics.entities.Camera
 import com.mist.algot.graphics.entities.Light
 import com.mist.algot.graphics.rendering.Loader
 import org.lwjgl.util.vector.Matrix4f
+import org.lwjgl.util.vector.Vector4f
 
 class StaticShader extends ShaderProgram {
 
@@ -18,6 +18,7 @@ class StaticShader extends ShaderProgram {
     private int location_lightColor
     private int location_shineDamper
     private int location_reflectivity
+    private int location_frustumPlanes
 
     public StaticShader() {
         super(VERTEX_FILE, GEOMETRY_FILE, FRAGMENT_FILE)
@@ -39,6 +40,7 @@ class StaticShader extends ShaderProgram {
         location_lightColor = getUniformLocation("lightColor")
         location_shineDamper = getUniformLocation("shineDamper")
         location_reflectivity = getUniformLocation("reflectivity")
+        location_frustumPlanes = getUniformLocation("frustumPlanes")
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
@@ -49,8 +51,12 @@ class StaticShader extends ShaderProgram {
         loadMatrix(location_projectionMatrix, matrix)
     }
 
-    public void loadViewMatrix(Camera camera) {
-        loadMatrix(location_viewMatrix, camera.viewMatrix)
+    public void loadViewMatrix(Matrix4f viewMatrix) {
+        loadMatrix(location_viewMatrix, viewMatrix)
+    }
+
+    void loadViewFrustumPlanes(List<Vector4f> planes) {
+        loadVectorArray(location_frustumPlanes, planes)
     }
 
     public void loadLight(Light light) {

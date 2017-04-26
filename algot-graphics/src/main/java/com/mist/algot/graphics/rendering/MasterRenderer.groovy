@@ -6,6 +6,8 @@ import com.mist.algot.graphics.entities.Light
 import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.shaders.StaticShader
 
+import static com.mist.algot.graphics.toolbox.Maths.calculateFrustumPlanes
+
 class MasterRenderer {
 
     private final StaticShader shader = new StaticShader()
@@ -14,10 +16,14 @@ class MasterRenderer {
     private final Map<TexturedModel, List<Entity>> entities = [:]
 
     public void render(Light sun, Camera camera) {
+        def viewMatrix = camera.viewMatrix
+        def frustumPlanes = calculateFrustumPlanes(renderer.projectionMatrix, viewMatrix)
+
         renderer.prepare()
         shader.start()
         shader.loadLight(sun)
-        shader.loadViewMatrix(camera)
+        shader.loadViewMatrix(viewMatrix)
+        shader.loadViewFrustumPlanes(frustumPlanes)
         renderer.render(entities)
         shader.stop()
         entities.clear()

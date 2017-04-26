@@ -7,8 +7,11 @@ import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL32
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
+import org.lwjgl.util.vector.Vector4f
 
 import java.nio.FloatBuffer
+
+import static com.mist.algot.graphics.toolbox.BufferUtils.loadToBuffer
 
 abstract class ShaderProgram {
 
@@ -71,6 +74,10 @@ abstract class ShaderProgram {
 
     protected void loadVector(int location, Vector3f vector) {
         GL20.glUniform3f(location, vector.x, vector.y, vector.z)
+    }
+
+    protected void loadVectorArray(int location, List<Vector4f> vectors) {
+        GL20.glUniform4(location, loadToBuffer(vectors))
     }
 
     protected void loadBoolean(int location, boolean value) {
