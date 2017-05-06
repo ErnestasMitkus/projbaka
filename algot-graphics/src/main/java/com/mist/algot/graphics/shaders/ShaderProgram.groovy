@@ -20,16 +20,24 @@ abstract class ShaderProgram {
     private int geometryShaderId
     private int fragmentShaderId
 
+    private final boolean usingGeometryShader
+
     private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(4*4)
 
     public ShaderProgram(String vertexFile, String geometryFile, String fragmentFile) {
+        usingGeometryShader = geometryFile != null && !geometryFile.empty
+
         vertexShaderId = loadShader(vertexFile, GL20.GL_VERTEX_SHADER)
-        geometryShaderId = loadShader(geometryFile, GL32.GL_GEOMETRY_SHADER)
+        if (usingGeometryShader) {
+            geometryShaderId = loadShader(geometryFile, GL32.GL_GEOMETRY_SHADER)
+        }
         fragmentShaderId = loadShader(fragmentFile, GL20.GL_FRAGMENT_SHADER)
         programId = GL20.glCreateProgram()
 
         GL20.glAttachShader(programId, vertexShaderId)
-        GL20.glAttachShader(programId, geometryShaderId)
+        if (usingGeometryShader) {
+            GL20.glAttachShader(programId, geometryShaderId)
+        }
         GL20.glAttachShader(programId, fragmentShaderId)
         bindAttributes()
         GL20.glLinkProgram(programId)
@@ -54,11 +62,13 @@ abstract class ShaderProgram {
     void cleanup() {
         stop()
         GL20.glDetachShader(programId, vertexShaderId)
-        GL20.glDetachShader(programId, geometryShaderId)
         GL20.glDetachShader(programId, fragmentShaderId)
         GL20.glDeleteShader(vertexShaderId)
-        GL20.glDeleteShader(geometryShaderId)
         GL20.glDeleteShader(fragmentShaderId)
+        if (usingGeometryShader) {
+            GL20.glDetachShader(programId, geometryShaderId)
+            GL20.glDeleteShader(geometryShaderId)
+        }
         GL20.glDeleteProgram(programId)
     }
 
@@ -99,7 +109,7 @@ abstract class ShaderProgram {
 
         if (GL20.glGetShaderi(shaderId, GL20.GL_COMPILE_STATUS) == GL11.GL_FALSE) {
             System.out.println(GL20.glGetShaderInfoLog(shaderId, 500))
-            throw new RuntimeException("Could not compile ${shaderTypeToString(type)} shader")
+            throw new RuntimeException("Could not compile ${shaderTypeToString(type)} shader($file)")
         }
 
         return shaderId

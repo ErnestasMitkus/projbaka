@@ -1,8 +1,7 @@
 package com.mist.algot.graphics.rendering
 
-import com.mist.algot.graphics.utils.FileUtils
 import com.mist.algot.graphics.models.RawModel
-import org.lwjgl.BufferUtils
+import com.mist.algot.graphics.utils.FileUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20
@@ -10,8 +9,8 @@ import org.lwjgl.opengl.GL30
 import org.newdawn.slick.opengl.Texture
 import org.newdawn.slick.opengl.TextureLoader
 
-import java.nio.FloatBuffer
-import java.nio.IntBuffer
+import static com.mist.algot.graphics.toolbox.BufferUtils.storeDataInFloatBuffer
+import static com.mist.algot.graphics.toolbox.BufferUtils.storeDataInIntBuffer
 
 class Loader {
 
@@ -88,19 +87,4 @@ class Loader {
         def buffer = storeDataInIntBuffer(indices)
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW)
     }
-
-    private static IntBuffer storeDataInIntBuffer(int[] data) {
-        def buffer = BufferUtils.createIntBuffer(data.length)
-        buffer.put(data)
-        buffer.flip()
-        buffer
-    }
-
-    private static FloatBuffer storeDataInFloatBuffer(float[] data) {
-        def buffer = BufferUtils.createFloatBuffer(data.length)
-        buffer.put(data)
-        buffer.flip()
-        buffer
-    }
-
 }

@@ -2,6 +2,7 @@ package com.mist.algot.graphics.rendering
 
 import com.mist.algot.graphics.entities.Entity
 import com.mist.algot.graphics.models.TexturedModel
+import com.mist.algot.graphics.shaders.FrustumShader
 import com.mist.algot.graphics.shaders.StaticShader
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
@@ -17,25 +18,28 @@ import static com.mist.algot.graphics.rendering.Loader.VERTICES_ATTRIB_INDEX
 class Renderer {
 
     static final float FOV = 70 // field of view
-    static final float NEAR_PLANE = 15
-    static final float FAR_PLANE = 200
+    static final float NEAR_PLANE = 5
+    static final float FAR_PLANE = 300
 
     private final StaticShader staticShader
+    private final FrustumShader frustumShader
     private final Matrix4f projectionMatrix
 
-    Renderer(StaticShader staticShader) {
+    Renderer(StaticShader staticShader, FrustumShader frustumShader) {
         projectionMatrix = createProjectionMatrix()
         this.staticShader = staticShader
+        this.frustumShader = frustumShader
         staticShader.start()
         staticShader.loadProjectionMatrix(projectionMatrix)
         staticShader.stop()
+        frustumShader.start()
+        frustumShader.loadProjectionMatrix(projectionMatrix)
+        frustumShader.stop()
+        GL11.glEnable(GL11.GL_BLEND)
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
     }
 
-    static void prepare() {
-        if (HidingManager.backFaceCullingEnabled) {
-            GL11.glCullFace(GL11.GL_BACK)
-        }
-
+    static void clear() {
         if (HidingManager.ZBufferEnabled) {
             GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT)
         } else {
@@ -43,6 +47,19 @@ class Renderer {
         }
 
         GL11.glClearColor(0.3f, 0, 0, 1)
+    }
+
+    static void prepare(boolean frustumPlanesRenderingEnabled) {
+        if (HidingManager.backFaceCullingEnabled) {
+            if (frustumPlanesRenderingEnabled) {
+                HidingManager.enableBackFaceCulling()
+            }
+            GL11.glCullFace(GL11.GL_BACK)
+        }
+    }
+
+    static void prepareForFrustum() {
+        GL11.glDisable(GL11.GL_CULL_FACE)
     }
 
     void render(Map<TexturedModel, List<Entity>> entities) {
@@ -67,10 +84,17 @@ class Renderer {
         }
     }
 
+    void renderFrustum() {
+        withEnabledAttributes([FrustumShader.VERTICES_ATTRIB_INDEX,
+                               FrustumShader.NORMALS_ATTRIB_INDEX,
+                               FrustumShader.COLORS_ATTRIB_INDEX]) {
+            GL30.glBindVertexArray(frustumShader.vaoId)
+            GL11.glDrawElements(GL11.GL_TRIANGLES, 6 * 2 * 3, GL11.GL_UNSIGNED_INT, 0)
+        }
+    }
+
     private static Matrix4f createProjectionMatrix() {
         float aspectRatio = (float) Display.displayMode.width / (float) Display.displayMode.height
-
-        aspectRatio = 444.44 / 250.0
         float xScale = (1f / Math.tan(Math.toRadians(FOV / 2f)))
         float yScale = xScale * aspectRatio
         float frustumLength = FAR_PLANE - NEAR_PLANE

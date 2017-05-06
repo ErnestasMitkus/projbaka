@@ -1,5 +1,7 @@
 package com.mist.algot.graphics.toolbox
 
+import com.mist.algot.graphics.entities.Camera
+import com.mist.algot.graphics.rendering.Renderer
 import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
@@ -30,6 +32,15 @@ class Maths {
         rotate(viewMatrix, new Vector3f(pitch, yaw, roll))
         Matrix4f.translate(invert(position), viewMatrix, viewMatrix)
         return viewMatrix
+    }
+
+    static Vector4f multiply(Matrix4f matrix, Vector4f vector) {
+        new Vector4f(
+            matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z + matrix.m03 * vector.y as float,
+            matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z + matrix.m13 * vector.y as float,
+            matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z + matrix.m23 * vector.y as float,
+            matrix.m30 * vector.x + matrix.m31 * vector.y + matrix.m32 * vector.z + matrix.m33 * vector.y as float
+        )
     }
 
     public static void rotate(Matrix4f matrix, Vector3f rotation) {
@@ -108,5 +119,38 @@ class Maths {
         normalize(nearPlane)
 
         return [rightPlane, leftPlane, botPlane, topPlane, farPlane, nearPlane]
+    }
+
+    static List<Vector3f> calculateFrustumPlanesPoints(Camera camera) {
+        Vector3f direction = camera.viewDirection
+        Vector3f position = camera.position
+        Vector3f up = camera.up
+        Vector3f right = camera.right
+
+        float nearDist = 15 //Renderer.NEAR_PLANE
+        float farDist = 200f //Renderer.FAR_PLANE
+
+        float Hnear = 10f
+        float Wnear = 10f
+        float Hfar = 120f
+        float Wfar = 120f
+
+        use(Vectors) {
+            Vector3f farCenter = position + direction * farDist
+            Vector3f nearCenter = position + direction * nearDist
+            Vector3f ftl, ftr, fbl, fbr, ntl, ntr, nbl, nbr  // far top left, top right, bot left, bot right, near ...
+
+            ftl = farCenter + (up * (Hfar / 2)) - (right * (Wfar / 2))
+            ftr = farCenter + (up * (Hfar / 2)) + (right * (Wfar / 2))
+            fbl = farCenter - (up * (Hfar / 2)) - (right * (Wfar / 2))
+            fbr = farCenter - (up * (Hfar / 2)) + (right * (Wfar / 2))
+
+            ntl = nearCenter + (up * (Hnear / 2)) - (right * (Wnear / 2))
+            ntr = nearCenter + (up * (Hnear / 2)) + (right * (Wnear / 2))
+            nbl = nearCenter - (up * (Hnear / 2)) - (right * (Wnear / 2))
+            nbr = nearCenter - (up * (Hnear / 2)) + (right * (Wnear / 2))
+
+            return [ftl, ftr, fbl, fbr, ntl, ntr, nbl, nbr]
+        }
     }
 }
