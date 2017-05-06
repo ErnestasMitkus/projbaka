@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import static com.mist.algot.graphics.toolbox.Maths.calculateFrustumPlanes
 import static com.mist.algot.graphics.toolbox.Maths.calculateFrustumPlanesPoints
+import static com.mist.algot.graphics.toolbox.Maths.multiply
 
 class MasterRenderer {
 
@@ -54,13 +55,14 @@ class MasterRenderer {
 
         renderer.clear()
         boolean renderingFrustumPlanes = shouldRenderFrustum()
+        boolean recalculateFrustum = shouldRecalculateFrustum()
         if (renderingFrustumPlanes) {
             frustumShader.start()
-            if (shouldRecalculateFrustum() || frustumPlanes.empty) {
+            if (recalculateFrustum || frustumPlanes.empty) {
+                recalculateFrustum = true
                 println "Calculating frustum planes"
                 setupFrustumPlanes(camera)
                 frustumShader.loadFrustumPlanes(frustumPlanes)
-
             }
             frustumShader.loadViewMatrix(viewMatrix)
             renderer.prepareForFrustum()
@@ -89,11 +91,42 @@ class MasterRenderer {
         shader.start()
         shader.loadLight(sun)
         shader.loadViewMatrix(viewMatrix)
-//        shader.loadViewFrustumPlanes(frustumPlanes)
+//        if (recalculateFrustum) {
+            shader.loadViewFrustumPlanes(calculateViewFrustumPlanes(camera))
+//        }
         renderer.render(entities)
         shader.stop()
         entities.clear()
     }
+
+    private List<Vector4f> calculateViewFrustumPlanes(Camera camera) {
+        def planes = FrustumHelpers.extractPlanes(frustumPlanes)
+//        def projViewMatrix = Matrix4f.mul(renderer.projectionMatrix, camera.viewMatrix, null)
+//        planes.collect {
+//            multiply(projViewMatrix, it)
+//        }
+        planes
+    }
+
+//    private Vector3f mult(Matrix4f matrix, Vector3f vector) {
+//        def vec4 = new Vector4f(vector.x, vector.y, vector.z, 1)
+//        def multVec4 = multiply(matrix, vec4)
+//        new Vector3f(multVec4.x, multVec4.y, multVec4.z)
+//    }
+//
+//    private List<Vector4f> calculateViewFrustumPlanes(Camera camera) {
+//        def projViewMatrix = Matrix4f.mul(renderer.projectionMatrix, camera.viewMatrix, null)
+//        def planes = frustumPlanes.collect {
+//            new FrustumPlane(
+//                mult(projViewMatrix, it.a),
+//                mult(projViewMatrix, it.b),
+//                mult(projViewMatrix, it.c),
+//                mult(projViewMatrix, it.d),
+//                it.color
+//            )
+//        }
+//        FrustumHelpers.extractPlanes(planes)
+//    }
 
     void processEntity(Entity entity) {
         def entityModel = entity.model

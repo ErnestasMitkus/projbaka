@@ -9,6 +9,7 @@ out VertexData {
   vec3 surfaceNormal;
   vec3 toLightVector;
   vec3 toCameraVector;
+  vec3 pass_position;
 } VertexOut;
 
 uniform mat4 transformationMatrix;
@@ -26,4 +27,5 @@ void main(void) {
     VertexOut.toLightVector = lightPosition - worldPosition.xyz;
 
     VertexOut.toCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
+    VertexOut.pass_position = worldPosition.xyz;
 }

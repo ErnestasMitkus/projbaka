@@ -2,6 +2,7 @@ package com.mist.algot.graphics.toolbox
 
 import com.mist.algot.graphics.entities.FrustumPlane
 import org.lwjgl.util.vector.Vector3f
+import org.lwjgl.util.vector.Vector4f
 import org.newdawn.slick.Color
 
 class FrustumHelpers {
@@ -43,6 +44,25 @@ class FrustumHelpers {
 
         result
 //        [far.a, far.d, far.b, far.c, near.d, near.a, near.c, near.b]
+    }
+
+    @SuppressWarnings("GroovyAssignabilityCheck")
+    static List<Vector4f> extractPlanes(List<FrustumPlane> frustumPlanes) {
+        use(Vectors) {
+            frustumPlanes.collect { plane ->
+                def vec1 = plane.b - plane.a
+                def vec2 = plane.c - plane.a
+
+                def crossProduct = Vector3f.cross(vec1, vec2, null)
+                def vec = new Vector4f(
+                    crossProduct.x,
+                    crossProduct.y,
+                    crossProduct.z,
+                    - (crossProduct.x * plane.a.x + crossProduct.y * plane.a.y + crossProduct.z * plane.a.z) as float
+                )
+                vec.normalise(null)
+            }
+        }
     }
 
     static List<Integer> extractIndices(List<FrustumPlane> frustumPlanes) {

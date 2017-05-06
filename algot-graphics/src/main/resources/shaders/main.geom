@@ -8,6 +8,7 @@ in VertexData {
   vec3 surfaceNormal;
   vec3 toLightVector;
   vec3 toCameraVector;
+  vec3 pass_position;
 } VertexIn[3];
 
 out VertexData {
@@ -22,18 +23,19 @@ uniform vec4 frustumPlanes[6]; // right left bottom top far near
 
 const int TEST_PLANE = 5;
 
+
+float distanceFromPlane(in vec4 plane, in vec3 p) {
+    return dot(plane.xyz, p) + plane.w;
+    //return plane.x * p.x + plane.y * p.y + plane.z * p.z + plane.w;
+}
+
+
 /*
 float distanceFromPlane(in vec4 plane, in vec3 p) {
-    // ((dot(plane.xyz, p) + plane.w) < 0)
-    return plane.x * p.x + plane.y * p.y + plane.z * p.z + plane.w;
-}
-*/
-
-
-float distanceFromPlane(in vec4 plane, in vec3 p) {
     float flatDist = plane.x * p.x + plane.y * p.y + plane.z * p.z + plane.w;
-    return flatDist / sqrt(p.x * p.x + p.y * p.y + p.z * p.z);
-}
+    return flatDist;
+//    return abs(flatDist) / sqrt(p.x * p.x + p.y * p.y + p.z * p.z);
+}*/
 
 bool pointInFrustum(in vec3 p) {
     //return distanceFromPlane(frustumPlanes[TEST_PLANE], p) > 0;
@@ -62,8 +64,8 @@ float calcDist(in vec3 p) {
 
 int calcCount(in vec3 p) {
     return distanceFromPlane(frustumPlanes[TEST_PLANE], p) > 0 ? 1 : 0;
-/*
-    int count = 0;
+
+/*    int count = 0;
     for (int i = 0; i < 6; i++) {
         vec4 plane = frustumPlanes[i];
         float dist = distanceFromPlane(plane, p);
@@ -71,7 +73,7 @@ int calcCount(in vec3 p) {
             count++;
         }
     }
-    return count;*/
+    return count; /**/
 }
 
 bool foundVertexInsideFrustum() {
@@ -104,7 +106,8 @@ void main() {
 
     int count = 0;
     for (int i = 0; i < gl_in.length(); i++) {
-        count = max(calcCount(gl_in[i].gl_Position.xyz), count);
+        //count = max(calcCount(gl_in[i].gl_Position.xyz), count);
+        count = max(calcCount(VertexIn[i].pass_position), count);
     }
 
     for (int i = 0; i < gl_in.length(); i++) {
@@ -115,43 +118,9 @@ void main() {
         VertexOut.toCameraVector = VertexIn[i].toCameraVector;
 
 
-
-
-        //VertexOut.color = colorFromCount(count);
-        VertexOut.color = vec3(1, 0, 1);
-
-
-        float dist = distanceFromPlane(frustumPlanes[TEST_PLANE], gl_in[i].gl_Position.xyz);
-        float perc = min(max(dist / 100.0, 0.0), 1.0);
-        VertexOut.color = vec3(0, 0, perc);
-
-        /*if (perc >= 1) {
-          VertexOut.color = vec3(0, 1, 1);
-        }
-
-        if (perc <= 0) {
-          VertexOut.color = vec3(1, 1, 0);
-        }*/
-
-        if (dist > 0) {
-          VertexOut.color = vec3(1, 0, 0);
-        }
-
-        if (dist > 1) {
-          VertexOut.color = vec3(1, 1, 0);
-        }
-
-        if (dist > 3) {
-          VertexOut.color = vec3(0, 1, 0);
-        }
-
-        if (dist > 6) {
-          VertexOut.color = vec3(0, 1, 1);
-        }
-
-        if (dist <= 0) {
-          VertexOut.color = vec3(1, 1, 1);
-        }
+        count = calcCount(VertexIn[i].pass_position);
+        VertexOut.color = colorFromCount(count);
+        //VertexOut.color = vec3(1, 0, 1);
 
         EmitVertex();
     }

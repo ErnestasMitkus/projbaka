@@ -55,8 +55,8 @@ class StaticShader extends ShaderProgram {
         loadMatrix(location_viewMatrix, viewMatrix)
     }
 
-    void loadViewFrustumPlanes(List<Vector4f> planes) {
-        loadVectorArray(location_frustumPlanes, planes)
+    void loadViewFrustumPlanes(List<Vector4f> frustumPlanes) {
+        loadVectorArray(location_frustumPlanes, frustumPlanes)
     }
 
     public void loadLight(Light light) {
