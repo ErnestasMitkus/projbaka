@@ -47,7 +47,7 @@ class FrustumPlane {
         return d
     }
 
-    List<Vector3f> points() {
+    List<Vector3f> getPoints() {
         [a, b, c, d]
     }
 

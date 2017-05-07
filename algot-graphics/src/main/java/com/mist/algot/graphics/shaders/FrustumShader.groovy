@@ -2,7 +2,6 @@ package com.mist.algot.graphics.shaders
 
 import com.mist.algot.graphics.entities.FrustumPlane
 import com.mist.algot.graphics.toolbox.FrustumHelpers
-import com.mist.algot.graphics.toolbox.Utils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20

@@ -5,7 +5,6 @@ in VertexData {
   vec3 surfaceNormal;
   vec3 toLightVector;
   vec3 toCameraVector;
-  vec3 color;
 } VertexIn;
 
 out vec4 out_Color;
@@ -32,7 +31,5 @@ void main(void) {
     float dampedFactor = pow(specularFactor, shineDamper);
     vec3 finalSpecular = dampedFactor * reflectivity * lightColor;
 
-    out_Color = vec4(VertexIn.color, 0.9);
-
-//    out_Color = vec4(diffuse, 1.0) * texture(textureSampler, VertexIn.pass_textureCoords) + vec4(finalSpecular, 1.0);
+    out_Color = vec4(diffuse, 1.0) * texture(textureSampler, VertexIn.pass_textureCoords) + vec4(finalSpecular, 1.0);
 }

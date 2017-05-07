@@ -8,17 +8,9 @@ import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.shaders.FrustumShader
 import com.mist.algot.graphics.shaders.StaticShader
 import com.mist.algot.graphics.toolbox.FrustumHelpers
-import com.mist.algot.graphics.toolbox.Maths
 import org.lwjgl.input.Keyboard
-import org.lwjgl.util.vector.Matrix4f
-import org.lwjgl.util.vector.Vector3f
-import org.lwjgl.util.vector.Vector4f
 
-import java.util.concurrent.atomic.AtomicInteger
-
-import static com.mist.algot.graphics.toolbox.Maths.calculateFrustumPlanes
 import static com.mist.algot.graphics.toolbox.Maths.calculateFrustumPlanesPoints
-import static com.mist.algot.graphics.toolbox.Maths.multiply
 
 class MasterRenderer {
 
@@ -30,37 +22,18 @@ class MasterRenderer {
 
     private List<FrustumPlane> frustumPlanes = []
 
-    private long counter = 0
     private boolean wasPressedRenderFrustumKey = false
     private boolean shouldRenderFrustumPlanes = false
     private boolean wasPressedRecalcFrustum = false
 
-    List<Vector3f> calcWorldPositions(Camera camera, List<Vector3f> points) {
-//        def mat = Matrix4f.mul(renderer.projectionMatrix, camera.viewMatrix, null)  // projectionMatrix * viewMatrix * position
-        def mat = renderer.projectionMatrix                                         // projectionMatrix * position
-
-        points.collect {
-            def vec4 = Maths.multiply(mat, new Vector4f(it.x, it.y, it.z, 1))
-            new Vector3f(vec4.x, vec4.y, vec4.z)
-        }
-    }
-
-    public void render(Light sun, Camera camera) {
+    void render(Light sun, Camera camera) {
         def viewMatrix = camera.viewMatrix
-//        def frustumPlanes = calculateFrustumPlanes(renderer.projectionMatrix, viewMatrix)
-//
-//        if (counter++ == 3) {
-//            println(calculateFrustumPlanesPoints(camera))
-//        }
 
         renderer.clear()
         boolean renderingFrustumPlanes = shouldRenderFrustum()
-        boolean recalculateFrustum = shouldRecalculateFrustum()
         if (renderingFrustumPlanes) {
             frustumShader.start()
-            if (recalculateFrustum || frustumPlanes.empty) {
-                recalculateFrustum = true
-                println "Calculating frustum planes"
+            if (shouldRecalculateFrustum() || frustumPlanes.empty) {
                 setupFrustumPlanes(camera)
                 frustumShader.loadFrustumPlanes(frustumPlanes)
             }
@@ -68,65 +41,17 @@ class MasterRenderer {
             renderer.prepareForFrustum()
             renderer.renderFrustum()
             frustumShader.stop()
-
-            if (counter++ > 300 && Keyboard.isKeyDown(Keyboard.KEY_0)) {
-                counter = 0
-                def points = FrustumHelpers.extractPoints(frustumPlanes) // 4x each plane
-
-//                println ""
-//                println ""
-//                println "Near: ${points[20..23]}, normal: ${frustumPlanes[5].normal}"
-//                println "Left: ${points[4..7]}, normal: ${frustumPlanes[1].normal}"
-            }
-
-            if (counter++ > 300 && Keyboard.isKeyDown(Keyboard.KEY_9)) {
-                counter = 0;
-                println "Camera position: $camera.position"
-            }
-
-//            println "Camera: $camera.position,  rightPlaneTR: ${frustumPlanes[0].a}, transformedRightPlaneTR ${calcRightPlane(camera)}"
         }
 
         renderer.prepare(renderingFrustumPlanes)
         shader.start()
         shader.loadLight(sun)
         shader.loadViewMatrix(viewMatrix)
-//        if (recalculateFrustum) {
-            shader.loadViewFrustumPlanes(calculateViewFrustumPlanes(camera))
-//        }
+        shader.loadViewFrustumPlanes(FrustumHelpers.extractPlanes(frustumPlanes))
         renderer.render(entities)
         shader.stop()
         entities.clear()
     }
-
-    private List<Vector4f> calculateViewFrustumPlanes(Camera camera) {
-        def planes = FrustumHelpers.extractPlanes(frustumPlanes)
-//        def projViewMatrix = Matrix4f.mul(renderer.projectionMatrix, camera.viewMatrix, null)
-//        planes.collect {
-//            multiply(projViewMatrix, it)
-//        }
-        planes
-    }
-
-//    private Vector3f mult(Matrix4f matrix, Vector3f vector) {
-//        def vec4 = new Vector4f(vector.x, vector.y, vector.z, 1)
-//        def multVec4 = multiply(matrix, vec4)
-//        new Vector3f(multVec4.x, multVec4.y, multVec4.z)
-//    }
-//
-//    private List<Vector4f> calculateViewFrustumPlanes(Camera camera) {
-//        def projViewMatrix = Matrix4f.mul(renderer.projectionMatrix, camera.viewMatrix, null)
-//        def planes = frustumPlanes.collect {
-//            new FrustumPlane(
-//                mult(projViewMatrix, it.a),
-//                mult(projViewMatrix, it.b),
-//                mult(projViewMatrix, it.c),
-//                mult(projViewMatrix, it.d),
-//                it.color
-//            )
-//        }
-//        FrustumHelpers.extractPlanes(planes)
-//    }
 
     void processEntity(Entity entity) {
         def entityModel = entity.model
@@ -140,9 +65,7 @@ class MasterRenderer {
 
     void setupFrustumPlanes(Camera camera) {
         def planesPoints = calculateFrustumPlanesPoints(camera)
-        println planesPoints
-        def frustumPlanes = FrustumHelpers.transformToPlanes(planesPoints)
-        this.frustumPlanes = frustumPlanes
+        this.frustumPlanes = FrustumHelpers.transformToPlanes(planesPoints)
     }
 
     private boolean shouldRenderFrustum() {
@@ -181,9 +104,8 @@ class MasterRenderer {
         return false
     }
 
-    public void cleanup() {
+    void cleanup() {
         shader.cleanup()
         frustumShader.cleanup()
     }
-
 }

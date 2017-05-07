@@ -33,17 +33,7 @@ class FrustumHelpers {
     }
 
     static List<Vector3f> extractPoints(List<FrustumPlane> frustumPlanes) {
-//        def near = frustumPlanes[5]
-//        def far = frustumPlanes[4]
-
-        def result = []
-
-        frustumPlanes.each {
-            it.points().each { result << it }
-        }
-
-        result
-//        [far.a, far.d, far.b, far.c, near.d, near.a, near.c, near.b]
+        frustumPlanes*.points.flatten() as List<Vector3f>
     }
 
     @SuppressWarnings("GroovyAssignabilityCheck")

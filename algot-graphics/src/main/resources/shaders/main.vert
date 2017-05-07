@@ -5,11 +5,11 @@ in vec2 textureCoords;
 in vec3 normal;
 
 out VertexData {
+  vec3 pass_position;
   vec2 pass_textureCoords;
   vec3 surfaceNormal;
   vec3 toLightVector;
   vec3 toCameraVector;
-  vec3 pass_position;
 } VertexOut;
 
 uniform mat4 transformationMatrix;
