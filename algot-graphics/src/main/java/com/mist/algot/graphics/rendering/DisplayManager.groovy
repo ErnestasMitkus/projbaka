@@ -19,7 +19,7 @@ class DisplayManager {
     private static long lastFrameTime
     private static float delta
 
-    private static boolean reportFPS = false
+    private static boolean reportFPS = true
 
     private static final PerformanceManager performanceManager = new PerformanceManager(1000)
 

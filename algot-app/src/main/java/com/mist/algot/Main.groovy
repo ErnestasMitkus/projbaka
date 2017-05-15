@@ -1,12 +1,12 @@
 package com.mist.algot
 
+import com.mist.algot.graphics.controls.KeyboardManager
 import com.mist.algot.graphics.entities.Camera
 import com.mist.algot.graphics.entities.Entity
 import com.mist.algot.graphics.entities.Light
 import com.mist.algot.graphics.rendering.DisplayManager
 import com.mist.algot.graphics.rendering.Loader
 import com.mist.algot.graphics.rendering.MasterRenderer
-import com.mist.algot.graphics.toolbox.Controls
 import org.apache.commons.lang3.SystemUtils
 import org.lwjgl.opengl.Display
 import org.lwjgl.util.vector.Vector3f
@@ -60,9 +60,9 @@ class Main {
     private static void mainGameLoop(Camera camera, Light light, MasterRenderer renderer, List<Entity> entities) {
 //        DisplayManager.reportFPS = true
         while (!Display.isCloseRequested()) {
+            KeyboardManager.process()
             gameLoop(camera, light, renderer, entities)
             CommandListener.listen()
-            Controls.clear()
         }
     }
 

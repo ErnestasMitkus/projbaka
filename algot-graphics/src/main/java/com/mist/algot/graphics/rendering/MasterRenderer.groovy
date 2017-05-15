@@ -1,5 +1,6 @@
 package com.mist.algot.graphics.rendering
 
+import com.mist.algot.graphics.controls.KeyboardManager
 import com.mist.algot.graphics.entities.Camera
 import com.mist.algot.graphics.entities.Entity
 import com.mist.algot.graphics.entities.FrustumPlane
@@ -22,28 +23,29 @@ class MasterRenderer {
 
     private List<FrustumPlane> frustumPlanes = []
 
-    private boolean wasPressedRenderFrustumKey = false
-    private boolean shouldRenderFrustumPlanes = false
-    private boolean wasPressedRecalcFrustum = false
+    private boolean frustumPlanesRenderingEnabled = false
+    private boolean frustumPlanesRecalculatingPending = false
+
+    MasterRenderer() {
+        KeyboardManager.register(Keyboard.KEY_PERIOD, {
+            if (it == KeyboardManager.EventType.PRESSED) {
+                frustumPlanesRenderingEnabled = !frustumPlanesRenderingEnabled
+            }
+        })
+        KeyboardManager.register(Keyboard.KEY_LBRACKET, {
+            if (it == KeyboardManager.EventType.PRESSED) {
+                frustumPlanesRecalculatingPending = true
+            }
+        })
+    }
 
     void render(Light sun, Camera camera) {
         def viewMatrix = camera.viewMatrix
 
         renderer.clear()
-        boolean renderingFrustumPlanes = shouldRenderFrustum()
-        if (renderingFrustumPlanes) {
-            frustumShader.start()
-            if (shouldRecalculateFrustum() || frustumPlanes.empty) {
-                setupFrustumPlanes(camera)
-                frustumShader.loadFrustumPlanes(frustumPlanes)
-            }
-            frustumShader.loadViewMatrix(viewMatrix)
-            renderer.prepareForFrustum()
-            renderer.renderFrustum()
-            frustumShader.stop()
-        }
+        processFrustumPlanes(camera)
 
-        renderer.prepare(renderingFrustumPlanes)
+        renderer.prepare(frustumPlanesRenderingEnabled)
         shader.start()
         shader.loadLight(sun)
         shader.loadViewMatrix(viewMatrix)
@@ -51,6 +53,22 @@ class MasterRenderer {
         renderer.render(entities)
         shader.stop()
         entities.clear()
+    }
+
+    void processFrustumPlanes(Camera camera) {
+        frustumShader.start()
+        if (frustumPlanesRecalculatingPending || !frustumPlanes) {
+            frustumPlanesRecalculatingPending = false
+            setupFrustumPlanes(camera)
+            frustumShader.loadFrustumPlanes(frustumPlanes)
+        }
+
+        if (frustumPlanesRenderingEnabled) {
+            frustumShader.loadViewMatrix(camera.viewMatrix)
+            renderer.prepareForFrustum()
+            renderer.renderFrustum()
+        }
+        frustumShader.stop()
     }
 
     void processEntity(Entity entity) {
@@ -66,42 +84,6 @@ class MasterRenderer {
     void setupFrustumPlanes(Camera camera) {
         def planesPoints = calculateFrustumPlanesPoints(camera)
         this.frustumPlanes = FrustumHelpers.transformToPlanes(planesPoints)
-    }
-
-    private boolean shouldRenderFrustum() {
-        boolean keydown = Keyboard.isKeyDown(Keyboard.KEY_PERIOD)
-
-        // none. pressed key first time = true
-        // none. key hold/nohold = false
-        // yes. pressed key first time = false
-        // yes. key hold/nohold = yes
-
-        if (!keydown) {
-            wasPressedRenderFrustumKey = false
-        } else if (!wasPressedRenderFrustumKey) {
-            wasPressedRenderFrustumKey = true
-            shouldRenderFrustumPlanes = !shouldRenderFrustumPlanes
-            println "Frustum plane rendering ${shouldRenderFrustumPlanes ? "enabled." : "disabled"}"
-        }
-        return shouldRenderFrustumPlanes
-    }
-
-    private boolean shouldRecalculateFrustum() {
-        boolean keydown = Keyboard.isKeyDown(Keyboard.KEY_LBRACKET)
-
-        // wasPressed && !keydown -> FALSE, wasPressed = false
-        // !wasPressed && !keydown -> FALSE, wasPressed = false
-        // wasPressed && keyDown -> FALSE, wasPressed = true
-        // !wasPressed && keyDown -> TRUE, wasPressed = true
-
-        if (!keydown) {
-            wasPressedRecalcFrustum = false
-            return false
-        } else if (!wasPressedRecalcFrustum) {
-            wasPressedRecalcFrustum = true
-            return true
-        }
-        return false
     }
 
     void cleanup() {
