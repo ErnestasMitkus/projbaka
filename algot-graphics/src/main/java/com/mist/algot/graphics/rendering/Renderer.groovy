@@ -1,9 +1,11 @@
 package com.mist.algot.graphics.rendering
 
+import com.mist.algot.graphics.controls.KeyboardManager
 import com.mist.algot.graphics.entities.Entity
 import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.shaders.FrustumShader
 import com.mist.algot.graphics.shaders.StaticShader
+import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -25,6 +27,8 @@ class Renderer {
     private final FrustumShader frustumShader
     private final Matrix4f projectionMatrix
 
+    private boolean wireframeFrustumPlanes
+
     Renderer(StaticShader staticShader, FrustumShader frustumShader) {
         projectionMatrix = createProjectionMatrix()
         this.staticShader = staticShader
@@ -37,6 +41,12 @@ class Renderer {
         frustumShader.stop()
         GL11.glEnable(GL11.GL_BLEND)
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
+
+        KeyboardManager.register(Keyboard.KEY_U) {
+            if (it == KeyboardManager.EventType.PRESSED) {
+                wireframeFrustumPlanes = !wireframeFrustumPlanes
+            }
+        }
     }
 
     static void clear() {
@@ -49,17 +59,21 @@ class Renderer {
         GL11.glClearColor(0.3f, 0, 0, 1)
     }
 
-    static void prepare(boolean frustumPlanesRenderingEnabled) {
+    void prepare(boolean frustumPlanesRenderingEnabled) {
         if (HidingManager.backFaceCullingEnabled) {
             if (frustumPlanesRenderingEnabled) {
                 HidingManager.enableBackFaceCulling()
             }
             GL11.glCullFace(GL11.GL_BACK)
         }
+        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_FILL)
     }
 
-    static void prepareForFrustum() {
+    void prepareForFrustum() {
         GL11.glDisable(GL11.GL_CULL_FACE)
+        if (wireframeFrustumPlanes) {
+            GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE)
+        }
     }
 
     void render(Map<TexturedModel, List<Entity>> entities) {
