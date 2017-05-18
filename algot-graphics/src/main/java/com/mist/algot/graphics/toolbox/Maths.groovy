@@ -53,87 +53,19 @@ class Maths {
         new Vector3f(-vector.x, -vector.y, -vector.z)
     }
 
-    static void normalize(Vector4f vector) {
-//        vector.normalise(vector)
-
-
-        def vec3 = new Vector3f(vector.x, vector.y, vector.z)
-        vec3.normalise(vec3)
-
-        vector.x = vec3.x
-        vector.y = vec3.y
-        vector.z = vec3.z
-        vector
-    }
-
-    static List<Vector4f> calculateFrustumPlanes(Matrix4f projectionMatrix, Matrix4f viewMatrix) {
-        // Taken from example in http://www.crownandcutlass.com/features/technicaldetails/frustum.html
-        def clip = Matrix4f.mul(viewMatrix, projectionMatrix, null)
-
-        // Calculate right plane
-        def rightPlane = new Vector4f()
-        rightPlane.x = clip.m03 - clip.m00
-        rightPlane.y = clip.m13 - clip.m10
-        rightPlane.z = clip.m23 - clip.m20
-        rightPlane.w = clip.m33 - clip.m30
-        normalize(rightPlane)
-
-        // Calculate left plane
-        def leftPlane = new Vector4f()
-        leftPlane.x = clip.m03 + clip.m00
-        leftPlane.y = clip.m13 + clip.m10
-        leftPlane.z = clip.m23 + clip.m20
-        leftPlane.w = clip.m33 + clip.m30
-        normalize(leftPlane)
-
-        // Calculate bottom plane
-        def botPlane = new Vector4f()
-        botPlane.x = clip.m03 + clip.m01
-        botPlane.y = clip.m13 + clip.m11
-        botPlane.z = clip.m23 + clip.m21
-        botPlane.w = clip.m33 + clip.m31
-        normalize(botPlane)
-
-        // Calculate top plane
-        def topPlane = new Vector4f()
-        topPlane.x = clip.m03 - clip.m01
-        topPlane.y = clip.m13 - clip.m11
-        topPlane.z = clip.m23 - clip.m21
-        topPlane.w = clip.m33 - clip.m31
-        normalize(topPlane)
-
-        // Calculate far plane
-        def farPlane = new Vector4f()
-        farPlane.x = clip.m03 - clip.m02
-        farPlane.y = clip.m13 - clip.m12
-        farPlane.z = clip.m23 - clip.m22
-        farPlane.w = clip.m33 - clip.m32
-        normalize(farPlane)
-
-        // Calculate near plane
-        def nearPlane = new Vector4f()
-        nearPlane.x = clip.m03 + clip.m02
-        nearPlane.y = clip.m13 + clip.m12
-        nearPlane.z = clip.m23 + clip.m22
-        nearPlane.w = clip.m33 + clip.m32
-        normalize(nearPlane)
-
-        return [rightPlane, leftPlane, botPlane, topPlane, farPlane, nearPlane]
-    }
-
     static List<Vector3f> calculateFrustumPlanesPoints(Camera camera) {
         Vector3f direction = camera.viewDirection
         Vector3f position = camera.position
         Vector3f up = camera.up
         Vector3f right = camera.right
 
-        float nearDist = 15 //Renderer.NEAR_PLANE
-        float farDist = 200f //Renderer.FAR_PLANE
+        float nearDist = Renderer.NEAR_PLANE
+        float farDist = Renderer.FAR_PLANE
 
-        float Hnear = 10f
-        float Wnear = 10f
-        float Hfar = 120f
-        float Wfar = 120f
+        float Hnear = 4f
+        float Wnear = 7f
+        float Hfar = 240f
+        float Wfar = 420f
 
         use(Vectors) {
             Vector3f farCenter = position + direction * farDist

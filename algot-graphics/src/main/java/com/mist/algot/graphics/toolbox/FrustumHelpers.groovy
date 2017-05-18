@@ -7,7 +7,7 @@ import org.newdawn.slick.Color
 
 class FrustumHelpers {
 
-    private static final float ALPHA_FACTOR = 0.7;
+    private static final float ALPHA_FACTOR = 0.7
     private static final Color COLOR_FAR = trans(new Color(200, 0, 200), ALPHA_FACTOR)
     private static final Color COLOR_NEAR = trans(Color.cyan, ALPHA_FACTOR)
     private static final Color COLOR_RIGHT = trans(Color.yellow, ALPHA_FACTOR)
