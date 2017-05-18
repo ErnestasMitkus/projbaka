@@ -19,6 +19,7 @@ class StaticShader extends ShaderProgram {
     private int location_shineDamper
     private int location_reflectivity
     private int location_frustumPlanes
+    private int location_useFrustumCulling
 
     public StaticShader() {
         super(VERTEX_FILE, GEOMETRY_FILE, FRAGMENT_FILE)
@@ -41,6 +42,7 @@ class StaticShader extends ShaderProgram {
         location_shineDamper = getUniformLocation("shineDamper")
         location_reflectivity = getUniformLocation("reflectivity")
         location_frustumPlanes = getUniformLocation("frustumPlanes")
+        location_useFrustumCulling = getUniformLocation("useFrustumCulling")
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
@@ -57,6 +59,10 @@ class StaticShader extends ShaderProgram {
 
     void loadViewFrustumPlanes(List<Vector4f> frustumPlanes) {
         loadVectorArray(location_frustumPlanes, frustumPlanes)
+    }
+
+    void setUseFrustumCulling(boolean useFrustumCulling) {
+        loadBoolean(location_useFrustumCulling, useFrustumCulling)
     }
 
     public void loadLight(Light light) {

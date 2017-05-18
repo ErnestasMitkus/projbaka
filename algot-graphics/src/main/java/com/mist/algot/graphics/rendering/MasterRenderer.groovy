@@ -23,8 +23,9 @@ class MasterRenderer {
 
     private List<FrustumPlane> frustumPlanes = []
 
-    private boolean frustumPlanesRenderingEnabled = false
-    private boolean frustumPlanesRecalculatingPending = false
+    private boolean frustumPlanesRenderingEnabled
+    private boolean frustumPlanesRecalculatingPending
+    private boolean useFrustumCulling
 
     MasterRenderer() {
         KeyboardManager.register(Keyboard.KEY_PERIOD, {
@@ -37,6 +38,12 @@ class MasterRenderer {
                 frustumPlanesRecalculatingPending = true
             }
         })
+        KeyboardManager.register(Keyboard.KEY_O, {
+            if (it == KeyboardManager.EventType.PRESSED) {
+                toggleUseFrustumCulling()
+            }
+        })
+        toggleUseFrustumCulling()
     }
 
     void render(Light sun, Camera camera) {
@@ -84,6 +91,13 @@ class MasterRenderer {
     void setupFrustumPlanes(Camera camera) {
         def planesPoints = calculateFrustumPlanesPoints(camera)
         this.frustumPlanes = FrustumHelpers.transformToPlanes(planesPoints)
+    }
+
+    private void toggleUseFrustumCulling() {
+        useFrustumCulling = !useFrustumCulling
+        shader.start()
+        shader.setUseFrustumCulling(useFrustumCulling)
+        shader.stop()
     }
 
     void cleanup() {

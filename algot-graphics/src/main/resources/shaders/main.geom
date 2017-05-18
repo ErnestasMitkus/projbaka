@@ -19,6 +19,7 @@ out VertexData {
 } VertexOut;
 
 uniform vec4 frustumPlanes[6]; // right left bottom top far near
+uniform bool useFrustumCulling;
 
 float distanceFromPlane(in vec4 plane, in vec3 p) {
     return dot(plane.xyz, p) + plane.w;
@@ -45,7 +46,7 @@ bool foundVertexInsideFrustum() {
 }
 
 void main() {
-    if (!foundVertexInsideFrustum()) {
+    if (useFrustumCulling && !foundVertexInsideFrustum()) {
       return;
     }
 
