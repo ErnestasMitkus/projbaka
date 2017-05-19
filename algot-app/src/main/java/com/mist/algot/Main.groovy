@@ -32,8 +32,8 @@ class Main {
 
 
         List<Entity> entities = args.length > 1 ?
-                parseScenario(args[1]) :
-                Scenarios.stalls()
+                Scenarios.scenarioFromName(args[1]) :
+                Scenarios.trees()
 //                { throw new RuntimeException("No scenario specified.") }()
 
         mainGameLoop(camera, light, renderer, entities)
@@ -42,19 +42,6 @@ class Main {
         renderer.cleanup()
         loader.cleanup()
         DisplayManager.closeDisplay()
-    }
-
-    private static List<Entity> parseScenario(String scenario) {
-        Map<String, Closure<List<Entity>>> scenarios = [
-            cube: Scenarios.&cube,
-            trees: Scenarios.&trees,
-            stalls: Scenarios.&stalls,
-            dragons: Scenarios.&dragons,
-            dragonsFF: Scenarios.&dragonsOverlapFrontFirst,
-            dragonsBF: Scenarios.&dragonsOverlapBackFirst,
-            stallsNO: Scenarios.&stallsNoOverlap
-        ]
-        scenarios[scenario].call()
     }
 
     private static void mainGameLoop(Camera camera, Light light, MasterRenderer renderer, List<Entity> entities) {

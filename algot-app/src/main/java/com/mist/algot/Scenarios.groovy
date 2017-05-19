@@ -52,90 +52,41 @@ class Scenarios {
         CUBE_MODEL = new TexturedModel(CUBE_RAWMODEL, CUBE_TEXTURE)
     }
 
-    static List<Entity> dragons() {
-        [
-            new Vector3f(0, -5, -25),
-            new Vector3f(-300, 100, -800),
-            new Vector3f(30, -20, -80)
-        ].collect {
-            new Entity(DRAGON_MODEL, it)
-        }
-    }
-
-    static List<Entity> dragonsOverlapFrontFirst() {
-        [
-            new Vector3f(0, -5, -25),
-            new Vector3f(0, 0, -50)
-        ].collect {
-            new Entity(DRAGON_MODEL, it)
-        }
-    }
-
-    static List<Entity> dragonsOverlapBackFirst() {
-        dragonsOverlapFrontFirst().reverse()
-    }
-
-    static List<Entity> trees() {
-        def bgTrees = (-10..10).collect {
-            [new Vector3f(it*20 as float, (-30-Math.abs(it)) as float, -400),
-            new Vector3f(it*25 as float, (-10-Math.abs(it)) as float, -450),
-            new Vector3f(it*30 as float, (10-Math.abs(it)) as float, -500)]
-        }.flatten() as List<Vector3f>
-
-        (bgTrees + [
-            new Vector3f(0, -10, -45),
-            new Vector3f(-30, -15, -80),
-            new Vector3f(30, -15, -80),
-            new Vector3f(-25, -18, -140),
-            new Vector3f(25, -18, -140),
-
-            new Vector3f(-130, 20, -300),
-            new Vector3f(-110, 25, -310),
-            new Vector3f(-90, 20, -300),
-
-            new Vector3f(130, 20, -300),
-            new Vector3f(110, 25, -310),
-            new Vector3f(90, 20, -300),
-        ]).collect {
-            new Entity(TREE_MODEL, it)
-        }
-    }
-
-    static List<Entity> stalls() {
-        [
-            new Vector3f(0, -5, -25),
-            new Vector3f(-30, -3, -50),
-            new Vector3f(-15, -3, -50),
-            new Vector3f(-0, -3, -50),
-            new Vector3f(15, -3, -50),
-            new Vector3f(30, -3, -50),
-            new Vector3f(-10, -5, -12),
-            new Vector3f(10, -5, -12),
-        ].collect {
-            new Entity(STALL_MODEL, it)
-        }
-    }
-
-    static List<Entity> stallsNoOverlap() {
-        [
-            new Vector3f(0, -10, -50),
-            new Vector3f(-27, 10, -50),
-            new Vector3f(-15, 10, -50),
-            new Vector3f(-0, 10, -50),
-            new Vector3f(15, 10, -50),
-            new Vector3f(27, 10, -50),
-            new Vector3f(-15, -10, -50),
-            new Vector3f(15, -10, -50),
-        ].collect {
-            new Entity(STALL_MODEL, it)
-        }
-    }
-
     static List<Entity> cube() {
         [
             new Vector3f(0, -1, -7),
         ].collect {
             new Entity(CUBE_MODEL, it)
         }
+    }
+
+    static List<Entity> dragons() {
+        [
+            new Vector3f(0, -5, -25)
+        ].collect {
+            new Entity(DRAGON_MODEL, it)
+        }
+    }
+
+    static List<Entity> trees() {
+        float dist = 100
+        float toRad = Math.PI / 180f
+        def aroundTrees = (0..29).collect {
+            def radians = (it * (360f / 30f)) * toRad
+
+            [new Vector3f(dist * Math.sin(radians) as float, 0, dist * Math.cos(radians) as float)]
+        }.flatten() as List<Vector3f>
+
+        aroundTrees.collect {
+            new Entity(TREE_MODEL, it)
+        }
+    }
+
+    static List<Entity> scenarioFromName(String name) {
+        Map<String, Closure<List<Entity>>> scenarios = [
+            cube: Scenarios.&cube,
+            dragons: Scenarios.&dragons,
+        ]
+        scenarios[name].call()
     }
 }
