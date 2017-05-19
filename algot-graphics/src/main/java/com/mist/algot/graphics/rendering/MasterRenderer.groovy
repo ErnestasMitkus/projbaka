@@ -10,6 +10,7 @@ import com.mist.algot.graphics.shaders.FrustumShader
 import com.mist.algot.graphics.shaders.StaticShader
 import com.mist.algot.graphics.toolbox.FrustumHelpers
 import org.lwjgl.input.Keyboard
+import org.lwjgl.util.vector.Vector4f
 
 import static com.mist.algot.graphics.toolbox.Maths.calculateFrustumPlanesPoints
 
@@ -22,9 +23,13 @@ class MasterRenderer {
     private final Map<TexturedModel, List<Entity>> entities = [:]
 
     private List<FrustumPlane> frustumPlanes = []
+    private boolean frustumPlanesInvalidated = true
+    private List<Vector4f> frustPlanes = []
 
     private boolean frustumPlanesRenderingEnabled
+    private boolean frustumPlanesRenderingInvalidated
     private boolean frustumPlanesRecalculatingPending
+    private boolean lockFrustumToCamera
     private boolean useFrustumCulling
 
     MasterRenderer() {
@@ -34,8 +39,13 @@ class MasterRenderer {
             }
         })
         KeyboardManager.register(Keyboard.KEY_LBRACKET, {
-            if (it == KeyboardManager.EventType.PRESSED) {
+            if (it == KeyboardManager.EventType.HOLD) {
                 frustumPlanesRecalculatingPending = true
+            }
+        })
+        KeyboardManager.register(Keyboard.KEY_L, {
+            if (it == KeyboardManager.EventType.PRESSED) {
+                lockFrustumToCamera = !lockFrustumToCamera
             }
         })
         KeyboardManager.register(Keyboard.KEY_O, {
@@ -52,11 +62,16 @@ class MasterRenderer {
         renderer.clear()
         processFrustumPlanes(camera)
 
+        if (frustumPlanesInvalidated) {
+            frustumPlanesInvalidated = false
+            frustPlanes = FrustumHelpers.extractPlanes(frustumPlanes)
+        }
+
         renderer.prepare(frustumPlanesRenderingEnabled)
         shader.start()
         shader.loadLight(sun)
         shader.loadViewMatrix(viewMatrix)
-        shader.loadViewFrustumPlanes(FrustumHelpers.extractPlanes(frustumPlanes))
+        shader.loadViewFrustumPlanes(frustPlanes)
         renderer.render(entities)
         shader.stop()
         entities.clear()
@@ -64,13 +79,19 @@ class MasterRenderer {
 
     void processFrustumPlanes(Camera camera) {
         frustumShader.start()
+        if (lockFrustumToCamera) {
+            frustumPlanesRecalculatingPending = true
+        }
         if (frustumPlanesRecalculatingPending || !frustumPlanes) {
             frustumPlanesRecalculatingPending = false
             setupFrustumPlanes(camera)
-            frustumShader.loadFrustumPlanes(frustumPlanes)
         }
 
         if (frustumPlanesRenderingEnabled) {
+            if (frustumPlanesRenderingInvalidated) {
+                frustumPlanesRenderingInvalidated = false
+                frustumShader.loadFrustumPlanes(frustumPlanes)
+            }
             frustumShader.loadViewMatrix(camera.viewMatrix)
             renderer.prepareForFrustum()
             renderer.renderFrustum()
@@ -91,6 +112,8 @@ class MasterRenderer {
     void setupFrustumPlanes(Camera camera) {
         def planesPoints = calculateFrustumPlanesPoints(camera)
         this.frustumPlanes = FrustumHelpers.transformToPlanes(planesPoints)
+        frustumPlanesInvalidated = true
+        frustumPlanesRenderingInvalidated = true
     }
 
     private void toggleUseFrustumCulling() {
