@@ -7,6 +7,7 @@ class HidingManager {
     private static boolean backFaceCullingEnabled
     private static boolean ZBufferEnabled
     private static boolean paintersEnabled
+    private static boolean frustumCullingEnabled
 
     static boolean isBackFaceCullingEnabled() {
         return backFaceCullingEnabled
@@ -18,6 +19,10 @@ class HidingManager {
 
     static boolean isPaintersEnabled() {
         return paintersEnabled
+    }
+
+    static boolean isFrustumCullingEnabled() {
+        return frustumCullingEnabled
     }
 
     static void enableBackFaceCulling() {
@@ -38,6 +43,10 @@ class HidingManager {
         disableZBuffer()
     }
 
+    static void enableFrustumCulling() {
+        frustumCullingEnabled = true
+    }
+
     static void disableBackFaceCulling() {
         backFaceCullingEnabled = false
         GL11.glDisable(GL11.GL_CULL_FACE)
@@ -50,5 +59,16 @@ class HidingManager {
 
     static void disablePainters() {
         paintersEnabled = false
+    }
+
+    static void disableFrustumCulling() {
+        frustumCullingEnabled = false
+    }
+
+    static void disableAll() {
+        disableBackFaceCulling()
+        disableZBuffer()
+        disablePainters()
+        disableFrustumCulling()
     }
 }

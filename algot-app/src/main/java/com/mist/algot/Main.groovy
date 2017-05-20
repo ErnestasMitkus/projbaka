@@ -21,6 +21,7 @@ class Main {
         }
 
         DisplayManager.createDisplay()
+        DisplayManager.reportFPS = true
 
         Loader loader = new Loader()
         Scenarios.loadModels(loader)
@@ -36,8 +37,9 @@ class Main {
                 Scenarios.stalls()
 //                { throw new RuntimeException("No scenario specified.") }()
 
-        mainGameLoop(camera, light, renderer, entities)
-//        PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
+        CommandRegistry.registerCommands()
+//        mainGameLoop(camera, light, renderer, entities)
+        PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
 
         renderer.cleanup()
         loader.cleanup()
@@ -45,11 +47,9 @@ class Main {
     }
 
     private static void mainGameLoop(Camera camera, Light light, MasterRenderer renderer, List<Entity> entities) {
-//        DisplayManager.reportFPS = true
         while (!Display.isCloseRequested()) {
             KeyboardManager.process()
             gameLoop(camera, light, renderer, entities)
-            CommandListener.listen()
         }
     }
 

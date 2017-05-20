@@ -48,18 +48,13 @@ class MasterRenderer {
                 lockFrustumToCamera = !lockFrustumToCamera
             }
         })
-        KeyboardManager.register(Keyboard.KEY_O, {
-            if (it == KeyboardManager.EventType.PRESSED) {
-                toggleUseFrustumCulling()
-            }
-        })
-        toggleUseFrustumCulling()
     }
 
     void render(Light sun, Camera camera) {
         def viewMatrix = camera.viewMatrix
 
         renderer.clear()
+        updateFrustumPreferences()
         processFrustumPlanes(camera)
 
         if (frustumPlanesInvalidated) {
@@ -75,6 +70,15 @@ class MasterRenderer {
         renderer.render(entities)
         shader.stop()
         entities.clear()
+    }
+
+    private void updateFrustumPreferences() {
+        if (useFrustumCulling != HidingManager.frustumCullingEnabled) {
+            useFrustumCulling = HidingManager.frustumCullingEnabled
+            shader.start()
+            shader.setUseFrustumCulling(useFrustumCulling)
+            shader.stop()
+        }
     }
 
     void processFrustumPlanes(Camera camera) {
@@ -114,13 +118,6 @@ class MasterRenderer {
         this.frustumPlanes = FrustumHelpers.transformToPlanes(planesPoints)
         frustumPlanesInvalidated = true
         frustumPlanesRenderingInvalidated = true
-    }
-
-    private void toggleUseFrustumCulling() {
-        useFrustumCulling = !useFrustumCulling
-        shader.start()
-        shader.setUseFrustumCulling(useFrustumCulling)
-        shader.stop()
     }
 
     void cleanup() {

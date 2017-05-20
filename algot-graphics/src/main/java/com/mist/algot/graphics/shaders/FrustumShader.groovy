@@ -13,6 +13,7 @@ import static com.mist.algot.graphics.toolbox.BufferUtils.storeDataInFloatBuffer
 import static com.mist.algot.graphics.toolbox.BufferUtils.storeDataInIntBuffer
 import static com.mist.algot.graphics.toolbox.Utils.expand
 import static com.mist.algot.graphics.toolbox.Vectors.toArray
+import static com.mist.algot.graphics.utils.FailureUtils.doSilent
 
 class FrustumShader extends ShaderProgram {
 
@@ -122,9 +123,9 @@ class FrustumShader extends ShaderProgram {
     }
 
     void cleanup() {
-        GL30.glDeleteVertexArrays(vaoId)
+        doSilent { GL30.glDeleteVertexArrays(vaoId) }
         [vertVboId, normVboId, indVboId, colsVboId].each {
-            GL15.glDeleteBuffers(it)
+            doSilent { GL15.glDeleteBuffers(it) }
         }
         vaoId = null
         vertVboId = null

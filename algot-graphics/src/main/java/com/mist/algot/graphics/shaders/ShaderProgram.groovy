@@ -12,6 +12,7 @@ import org.lwjgl.util.vector.Vector4f
 import java.nio.FloatBuffer
 
 import static com.mist.algot.graphics.toolbox.BufferUtils.loadToBuffer
+import static com.mist.algot.graphics.utils.FailureUtils.doSilent
 
 abstract class ShaderProgram {
 
@@ -61,15 +62,15 @@ abstract class ShaderProgram {
 
     void cleanup() {
         stop()
-        GL20.glDetachShader(programId, vertexShaderId)
-        GL20.glDetachShader(programId, fragmentShaderId)
-        GL20.glDeleteShader(vertexShaderId)
-        GL20.glDeleteShader(fragmentShaderId)
+        doSilent { GL20.glDetachShader(programId, vertexShaderId) }
+        doSilent { GL20.glDetachShader(programId, fragmentShaderId) }
+        doSilent { GL20.glDeleteShader(vertexShaderId) }
+        doSilent { GL20.glDeleteShader(fragmentShaderId) }
         if (usingGeometryShader) {
-            GL20.glDetachShader(programId, geometryShaderId)
-            GL20.glDeleteShader(geometryShaderId)
+            doSilent { GL20.glDetachShader(programId, geometryShaderId) }
+            doSilent { GL20.glDeleteShader(geometryShaderId) }
         }
-        GL20.glDeleteProgram(programId)
+        doSilent { GL20.glDeleteProgram(programId) }
     }
 
     protected abstract void bindAttributes()

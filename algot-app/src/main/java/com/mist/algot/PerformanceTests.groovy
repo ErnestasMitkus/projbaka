@@ -6,22 +6,24 @@ import com.mist.algot.graphics.rendering.HidingManager
 enum PerformanceTests {
 
     NO_ALGORITHMS({
-        HidingManager.disableBackFaceCulling()
-        HidingManager.disableZBuffer()
-        HidingManager.disablePainters()
+        HidingManager.disableAll()
     }),
     ONLY_BACKFACE_CULLING({
+        HidingManager.disableAll()
         HidingManager.enableBackFaceCulling()
-        HidingManager.disableZBuffer()
-        HidingManager.disablePainters()
     }),
     ONLY_Z_BUFFER({
-        HidingManager.disableBackFaceCulling()
+        HidingManager.disableAll()
         HidingManager.enableZBuffer()
     }),
-    BACKFACE_AND_Z_BUFFER({
+    ONLY_FRUSTUM_CULLING({
+        HidingManager.disableAll()
+        HidingManager.enableFrustumCulling()
+    }),
+    BACKFACE_AND_FRUSTUM({
+        HidingManager.disableAll()
         HidingManager.enableBackFaceCulling()
-        HidingManager.enableZBuffer()
+        HidingManager.enableFrustumCulling()
     })
 
 

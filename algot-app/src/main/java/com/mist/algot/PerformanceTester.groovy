@@ -8,9 +8,10 @@ import static com.mist.algot.Reporter.printLine
 
 class PerformanceTester {
 
-    private static final int EACH_TEST_DURATION = TimeUnit.MINUTES.toMillis(20)
-//    private static final int EACH_TEST_DURATION = TimeUnit.SECONDS.toMillis(30)
-    private static final int WARMUP_TIME = TimeUnit.MINUTES.toMillis(2)
+//    private static final int EACH_TEST_DURATION = TimeUnit.MINUTES.toMillis(20)
+    private static final int EACH_TEST_DURATION = TimeUnit.SECONDS.toMillis(30)
+//    private static final int WARMUP_TIME = TimeUnit.MINUTES.toMillis(2)
+    private static final int WARMUP_TIME = TimeUnit.SECONDS.toMillis(5)
 
     private static final List<PerformanceTests> tests
 
@@ -74,7 +75,7 @@ class PerformanceTester {
         highestFPS = Math.floorDiv(highestFPS, criticalsSize)
         averageFPS = Math.floorDiv(fpss.sum() as Long, fpss.size())
 
-        printLine "${new Date().format( 'yyyy-MM-dd HH:mm:ss' )}  Test Done. Results:"
+        printLine "${new Date().format( 'yyyy-MM-dd HH:mm:ss' )}  Test Done: $testName. Results:"
         printLine "\tLowest FPS: $lowestFPS"
         printLine "\tHighest FPS: $highestFPS"
         printLine "\tAverage FPS: $averageFPS"

@@ -11,6 +11,7 @@ import org.newdawn.slick.opengl.TextureLoader
 
 import static com.mist.algot.graphics.toolbox.BufferUtils.storeDataInFloatBuffer
 import static com.mist.algot.graphics.toolbox.BufferUtils.storeDataInIntBuffer
+import static com.mist.algot.graphics.utils.FailureUtils.doSilent
 
 class Loader {
 
@@ -45,9 +46,9 @@ class Loader {
     }
 
     void cleanup() {
-        vaos.forEach(GL30.&glDeleteVertexArrays)
-        vbos.forEach(GL15.&glDeleteBuffers)
-        textures.forEach(GL11.&glDeleteTextures)
+        vaos.forEach { doSilent { GL30.&glDeleteVertexArrays } }
+        vbos.forEach { doSilent { GL15.&glDeleteBuffers } }
+        textures.forEach { doSilent { GL11.&glDeleteTextures } }
 
         vaos.clear()
         vbos.clear()
