@@ -24,6 +24,12 @@ enum PerformanceTests {
         HidingManager.disableAll()
         HidingManager.enableBackFaceCulling()
         HidingManager.enableFrustumCulling()
+    }),
+    BACKFACE_Z_AND_FRUSTUM({
+        HidingManager.disableAll()
+        HidingManager.enableBackFaceCulling()
+        HidingManager.enableZBuffer()
+        HidingManager.enableFrustumCulling()
     })
 
 

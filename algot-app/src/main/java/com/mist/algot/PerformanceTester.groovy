@@ -78,7 +78,7 @@ class PerformanceTester {
         highestFPS = Math.floorDiv(highestFPS, criticalsSize)
         averageFPS = Math.floorDiv(fpss.sum() as Long, fpss.size())
 
-        printLine "${new Date().format( 'yyyy-MM-dd HH:mm:ss' )}  Test Done: $testName. Results:"
+        printLine "${new Date().format( 'yyyy-MM-dd HH:mm:ss' )}  Test Done. Results:"
         printLine "\tLowest FPS: $lowestFPS"
         printLine "\tHighest FPS: $highestFPS"
         printLine "\tAverage FPS: $averageFPS"
