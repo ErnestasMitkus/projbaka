@@ -62,7 +62,10 @@ class Scenarios {
 
     static List<Entity> dragons() {
         [
-            new Vector3f(0, -5, -25)
+            new Vector3f(0, -5, -25),
+            new Vector3f(25, -5, 0),
+            new Vector3f(0, -5, 25),
+            new Vector3f(-25, -5, 0)
         ].collect {
             new Entity(DRAGON_MODEL, it)
         }

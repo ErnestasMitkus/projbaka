@@ -34,12 +34,11 @@ class Main {
 
         List<Entity> entities = args.length > 1 ?
                 Scenarios.scenarioFromName(args[1]) :
-                Scenarios.stalls()
+                Scenarios.dragons()
 //                { throw new RuntimeException("No scenario specified.") }()
 
-        CommandRegistry.registerCommands()
-//        mainGameLoop(camera, light, renderer, entities)
-        PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
+        mainGameLoop(camera, light, renderer, entities)
+//        PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
 
         renderer.cleanup()
         loader.cleanup()
@@ -47,6 +46,7 @@ class Main {
     }
 
     private static void mainGameLoop(Camera camera, Light light, MasterRenderer renderer, List<Entity> entities) {
+        CommandRegistry.registerCommands()
         while (!Display.isCloseRequested()) {
             KeyboardManager.process()
             gameLoop(camera, light, renderer, entities)
