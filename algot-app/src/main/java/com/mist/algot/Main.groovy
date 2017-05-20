@@ -37,8 +37,12 @@ class Main {
                 Scenarios.dragons()
 //                { throw new RuntimeException("No scenario specified.") }()
 
-        mainGameLoop(camera, light, renderer, entities)
-//        PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
+        if (System.getenv("DOTEST") != null) {
+            PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
+        } else {
+            mainGameLoop(camera, light, renderer, entities)
+        }
+
 
         renderer.cleanup()
         loader.cleanup()
