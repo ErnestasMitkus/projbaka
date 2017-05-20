@@ -2,6 +2,7 @@ package com.mist.algot
 
 import com.mist.algot.graphics.utils.PerformanceManager
 
+import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
 import static com.mist.algot.Reporter.printLine
@@ -24,10 +25,23 @@ class PerformanceTester {
 
     static void doPerformanceTest(Closure gameLoop) {
         tests.each {
+            gc()
             it.before()
             performTest("$it", gameLoop)
             it.after()
         }
+    }
+
+    private static void gc() {
+        printLine("Starting garbage collection")
+        Object obj = new Object()
+        WeakReference ref = new WeakReference<Object>(obj)
+        obj = null
+        while(ref.get() != null) {
+            System.gc()
+            Thread.sleep(1)
+        }
+        printLine("Garbage collection done")
     }
 
     private static void performTest(String testName, Closure gameLoop) {
