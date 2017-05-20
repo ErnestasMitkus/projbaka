@@ -67,6 +67,13 @@ class Maths {
         float Hfar = 240f
         float Wfar = 420f
 
+//        // overrides
+//        farDist = 200f
+//        Hnear = 10f
+//        Wnear = 10f
+//        Hfar = 120f
+//        Wfar = 120f
+
         use(Vectors) {
             Vector3f farCenter = position + direction * farDist
             Vector3f nearCenter = position + direction * nearDist

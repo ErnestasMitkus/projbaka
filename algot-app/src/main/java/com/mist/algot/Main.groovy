@@ -33,7 +33,7 @@ class Main {
 
         List<Entity> entities = args.length > 1 ?
                 Scenarios.scenarioFromName(args[1]) :
-                Scenarios.trees()
+                Scenarios.stalls()
 //                { throw new RuntimeException("No scenario specified.") }()
 
         mainGameLoop(camera, light, renderer, entities)

@@ -94,11 +94,27 @@ class Scenarios {
         }
     }
 
+    static List<Entity> stalls() {
+        float dist = 70
+        float toRad = Math.PI / 180f
+        def aroundStalls = (0..29).collect {
+            def radians = (it * (360f / 30f)) * toRad
+            [new Vector3f(dist * Math.sin(radians) as float, 0, dist * Math.cos(radians) as float)]
+        }.flatten() as List<Vector3f>
+
+        (aroundStalls + [
+            new Vector3f(0, -8, -25)
+        ]).collect {
+            new Entity(STALL_MODEL, it)
+        }
+    }
+
     static List<Entity> scenarioFromName(String name) {
         Map<String, Closure<List<Entity>>> scenarios = [
             cube: Scenarios.&cube,
             dragons: Scenarios.&dragons,
             trees: Scenarios.&trees,
+            stalls: Scenarios.&stalls
         ]
         scenarios[name].call()
     }
