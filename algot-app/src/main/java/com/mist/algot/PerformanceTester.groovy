@@ -8,15 +8,18 @@ import static com.mist.algot.Reporter.printLine
 
 class PerformanceTester {
 
-//    private static final int EACH_TEST_DURATION = TimeUnit.MINUTES.toMillis(20)
-    private static final int EACH_TEST_DURATION = TimeUnit.SECONDS.toMillis(30)
-//    private static final int WARMUP_TIME = TimeUnit.MINUTES.toMillis(2)
-    private static final int WARMUP_TIME = TimeUnit.SECONDS.toMillis(5)
+    private static int EACH_TEST_DURATION = TimeUnit.MINUTES.toMillis(20)
+    private static int WARMUP_TIME = TimeUnit.MINUTES.toMillis(2)
 
     private static final List<PerformanceTests> tests
 
     static {
         tests = PerformanceTests.values()
+        if (System.getenv("DEMOTEST") != null) {
+            println "Demo Test mode activated. Warmup time: 5 sec., Test duration: 30 sec."
+            EACH_TEST_DURATION = TimeUnit.SECONDS.toMillis(30)
+            WARMUP_TIME = TimeUnit.SECONDS.toMillis(5)
+        }
     }
 
     static void doPerformanceTest(Closure gameLoop) {
