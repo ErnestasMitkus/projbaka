@@ -1,6 +1,7 @@
 package com.mist.algot
 
 import com.mist.algot.graphics.entities.Entity
+import com.mist.algot.graphics.models.BoundingSphere
 import com.mist.algot.graphics.models.RawModel
 import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.rendering.Loader
@@ -26,34 +27,30 @@ class Scenarios {
     private static ModelTexture CUBE_TEXTURE
     private static TexturedModel CUBE_MODEL
 
-    private static RawModel CAMERA_RAWMODEL
-    private static ModelTexture CAMERA_TEXTURE
-    private static TexturedModel CAMERA_MODEL
-
     static void loadModels(Loader loader) {
         DRAGON_RAWMODEL = OBJLoader.loadObjModel("/objects/dragon.obj", loader)
         DRAGON_TEXTURE = new ModelTexture(loader.loadTexture("/textures/lamp.png"))
         DRAGON_TEXTURE.shineDamper = 10
         DRAGON_TEXTURE.reflectivity = 1
-        DRAGON_MODEL = new TexturedModel(DRAGON_RAWMODEL, DRAGON_TEXTURE)
+        DRAGON_MODEL = new TexturedModel(DRAGON_RAWMODEL, DRAGON_TEXTURE, new BoundingSphere(0.55f, new Vector3f(0, 4.5f, 0)))
 
         TREE_RAWMODEL = OBJLoader.loadObjModel("/objects/lowPolyTree.obj", loader)
         TREE_TEXTURE = new ModelTexture(loader.loadTexture("/textures/lowPolyTree.png"))
         TREE_TEXTURE.shineDamper = 10
         TREE_TEXTURE.reflectivity = 1
-        TREE_MODEL = new TexturedModel(TREE_RAWMODEL, TREE_TEXTURE)
+        TREE_MODEL = new TexturedModel(TREE_RAWMODEL, TREE_TEXTURE, new BoundingSphere(0.72f, new Vector3f(0, 7.5f, 0)))
 
         STALL_RAWMODEL = OBJLoader.loadObjModel("/objects/stall.obj", loader)
         STALL_TEXTURE = new ModelTexture(loader.loadTexture("/textures/stallTexture.png"))
         STALL_TEXTURE.shineDamper = 10
         STALL_TEXTURE.reflectivity = 1
-        STALL_MODEL = new TexturedModel(STALL_RAWMODEL, STALL_TEXTURE)
+        STALL_MODEL = new TexturedModel(STALL_RAWMODEL, STALL_TEXTURE, new BoundingSphere(0.4f, new Vector3f(0, 3.5f, -1f)))
 
         CUBE_RAWMODEL = OBJLoader.loadObjModel("/objects/simpleCube.obj", loader)
         CUBE_TEXTURE = new ModelTexture(loader.loadTexture("/textures/mud.png"))
         CUBE_TEXTURE.shineDamper = 10
         CUBE_TEXTURE.reflectivity = 1
-        CUBE_MODEL = new TexturedModel(CUBE_RAWMODEL, CUBE_TEXTURE)
+        CUBE_MODEL = new TexturedModel(CUBE_RAWMODEL, CUBE_TEXTURE, new BoundingSphere(0.35f, new Vector3f(0, 0.5f, 0)))
     }
 
     static Entity camera() {

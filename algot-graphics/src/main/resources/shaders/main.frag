@@ -1,6 +1,7 @@
 #version 150
 
 in VertexData {
+  vec3 pass_position;
   vec2 pass_textureCoords;
   vec3 surfaceNormal;
   vec3 toLightVector;

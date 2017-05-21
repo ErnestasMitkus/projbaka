@@ -25,6 +25,10 @@ abstract class ShaderProgram {
 
     private static FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(4*4)
 
+    ShaderProgram(String vertexFile, String fragmentFile) {
+        this(vertexFile, null, fragmentFile)
+    }
+
     public ShaderProgram(String vertexFile, String geometryFile, String fragmentFile) {
         usingGeometryShader = geometryFile != null && !geometryFile.empty
 

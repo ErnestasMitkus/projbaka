@@ -1,10 +1,9 @@
 package com.mist.algot
 
-import com.mist.algot.graphics.controls.KeyboardManager
 import com.mist.algot.graphics.entities.Camera
 import com.mist.algot.graphics.rendering.HidingManager
 
-import static com.mist.algot.graphics.controls.KeyboardManager.EventType.PRESSED
+import static com.mist.algot.graphics.controls.KeyboardManager.onPress
 import static org.lwjgl.input.Keyboard.KEY_B
 import static org.lwjgl.input.Keyboard.KEY_NUMPAD1
 import static org.lwjgl.input.Keyboard.KEY_NUMPAD2
@@ -39,11 +38,5 @@ class CommandRegistry {
         }
     }
 
-    private static onPress(int keycode, Closure closure) {
-        KeyboardManager.register(keycode, {
-            if (it == PRESSED) {
-                closure.call()
-            }
-        })
-    }
+
 }

@@ -8,6 +8,7 @@ import com.mist.algot.graphics.rendering.DisplayManager
 import com.mist.algot.graphics.rendering.Loader
 import com.mist.algot.graphics.rendering.MasterRenderer
 import org.apache.commons.lang3.SystemUtils
+import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.Display
 import org.lwjgl.util.vector.Vector3f
 
@@ -21,7 +22,10 @@ class Main {
         }
 
         DisplayManager.createDisplay()
-        DisplayManager.reportFPS = true
+        DisplayManager.reportFPS = false
+        KeyboardManager.onPress(Keyboard.KEY_F10) {
+            DisplayManager.reportFPS = !DisplayManager.reportFPS
+        }
 
         Loader loader = new Loader()
         Scenarios.loadModels(loader)
@@ -37,7 +41,7 @@ class Main {
                 Scenarios.trees()
 //                { throw new RuntimeException("No scenario specified.") }()
 
-        entities << Scenarios.camera()
+//        entities << Scenarios.camera()
 
         if (System.getenv("DOTEST") != null) {
             PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
@@ -63,7 +67,9 @@ class Main {
         DisplayManager.prepare()
         camera.move(DisplayManager.delta)
 
-//        entities*.increaseRotation(0, (float) (60 * DisplayManager.delta), 0)
+        float spin = (float) (60 * DisplayManager.delta)
+//        entities*.increaseRotation(0, spin, 0)
+
         entities.each { renderer.processEntity(it) }
 
         renderer.render(light, camera)

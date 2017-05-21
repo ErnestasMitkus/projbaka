@@ -41,6 +41,14 @@ class KeyboardManager {
         listeners[keycode].add(0, listener)
     }
 
+    static void onPress(int keycode, Closure closure) {
+        register(keycode, {
+            if (it == EventType.PRESSED) {
+                closure.call()
+            }
+        })
+    }
+
     private static EventType determineEventType(boolean now, boolean prev) {
         if (now && prev) {
             return EventType.HOLD

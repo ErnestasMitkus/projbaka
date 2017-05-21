@@ -9,7 +9,9 @@ import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.shaders.FrustumShader
 import com.mist.algot.graphics.shaders.StaticShader
 import com.mist.algot.graphics.toolbox.FrustumHelpers
+import com.mist.algot.graphics.toolbox.Maths
 import org.lwjgl.input.Keyboard
+import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
 
 import static com.mist.algot.graphics.toolbox.Maths.calculateFrustumPlanesPoints
@@ -31,22 +33,19 @@ class MasterRenderer {
     private boolean frustumPlanesRecalculatingPending
     private boolean lockFrustumToCamera
     private boolean useFrustumCulling
+    private Vector3f lastCameraPos = null
 
     MasterRenderer() {
-        KeyboardManager.register(Keyboard.KEY_PERIOD, {
-            if (it == KeyboardManager.EventType.PRESSED) {
-                frustumPlanesRenderingEnabled = !frustumPlanesRenderingEnabled
-            }
+        KeyboardManager.onPress(Keyboard.KEY_PERIOD, {
+            frustumPlanesRenderingEnabled = !frustumPlanesRenderingEnabled
         })
         KeyboardManager.register(Keyboard.KEY_LBRACKET, {
             if (it == KeyboardManager.EventType.HOLD) {
                 frustumPlanesRecalculatingPending = true
             }
         })
-        KeyboardManager.register(Keyboard.KEY_L, {
-            if (it == KeyboardManager.EventType.PRESSED) {
-                lockFrustumToCamera = !lockFrustumToCamera
-            }
+        KeyboardManager.onPress(Keyboard.KEY_L, {
+            lockFrustumToCamera = !lockFrustumToCamera
         })
     }
 
@@ -67,9 +66,22 @@ class MasterRenderer {
         shader.loadLight(sun)
         shader.loadViewMatrix(viewMatrix)
         shader.loadViewFrustumPlanes(frustPlanes)
-        renderer.render(entities)
+        renderer.render(filteredEntities())
         shader.stop()
         entities.clear()
+    }
+
+    private Map<TexturedModel, List<Entity>> filteredEntities() {
+        if (!HidingManager.frustumCullingEnabled) {
+            return entities
+        }
+        entities.collectEntries { key, value ->
+            def boundingSphere = key.boundingSphere
+            def v = value.findAll {
+                boundingSphere.isInsideFrustum(it.position, it.scale, frustPlanes)
+            }
+            [(key): v]
+        } as Map<TexturedModel, List<Entity>>
     }
 
     private void updateFrustumPreferences() {
@@ -83,7 +95,8 @@ class MasterRenderer {
 
     void processFrustumPlanes(Camera camera) {
         frustumShader.start()
-        if (lockFrustumToCamera) {
+        if (lockFrustumToCamera && camera.position != lastCameraPos) {
+            lastCameraPos = camera.position
             frustumPlanesRecalculatingPending = true
         }
         if (frustumPlanesRecalculatingPending || !frustumPlanes) {

@@ -77,4 +77,7 @@ class DisplayManager {
         this.reportFPS = reportFPS
     }
 
+    static boolean getReportFPS() {
+        return reportFPS
+    }
 }

@@ -64,15 +64,16 @@ class Maths {
 
         float Hnear = 4f
         float Wnear = 7f
-        float Hfar = 240f
-        float Wfar = 420f
+        float Hfar = 394f
+        float Wfar = 700f
 
-//        // overrides
-//        farDist = 200f
-//        Hnear = 10f
-//        Wnear = 10f
-//        Hfar = 120f
-//        Wfar = 120f
+        // overrides
+        nearDist = 20f
+        farDist = 200f
+        Hnear = 10f
+        Wnear = 10f
+        Hfar = 120f
+        Wfar = 120f
 
         use(Vectors) {
             Vector3f farCenter = position + direction * farDist
@@ -91,5 +92,20 @@ class Maths {
 
             return [ftl, ftr, fbl, fbr, ntl, ntr, nbl, nbr]
         }
+    }
+
+    static boolean sphereInsideFrustum(Vector3f position, float sphereRadius, List<Vector4f> frustumPlanes) {
+        for (def plane: frustumPlanes) {
+            float distance = distanceFromPlane(plane, position)
+            if (distance < -sphereRadius) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private static float distanceFromPlane(Vector4f plane, Vector3f point) {
+        // dot product + plane distance from origin
+        (plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w) as float
     }
 }
