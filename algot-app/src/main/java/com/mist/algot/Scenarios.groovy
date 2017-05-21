@@ -26,6 +26,10 @@ class Scenarios {
     private static ModelTexture CUBE_TEXTURE
     private static TexturedModel CUBE_MODEL
 
+    private static RawModel CAMERA_RAWMODEL
+    private static ModelTexture CAMERA_TEXTURE
+    private static TexturedModel CAMERA_MODEL
+
     static void loadModels(Loader loader) {
         DRAGON_RAWMODEL = OBJLoader.loadObjModel("/objects/dragon.obj", loader)
         DRAGON_TEXTURE = new ModelTexture(loader.loadTexture("/textures/lamp.png"))
@@ -50,6 +54,12 @@ class Scenarios {
         CUBE_TEXTURE.shineDamper = 10
         CUBE_TEXTURE.reflectivity = 1
         CUBE_MODEL = new TexturedModel(CUBE_RAWMODEL, CUBE_TEXTURE)
+    }
+
+    static Entity camera() {
+        def cam = new Entity(CUBE_MODEL, new Vector3f(0, 0, 0))
+        cam.scale = new Vector3f(1.4f, 1.4f, 2f)
+        cam
     }
 
     static List<Entity> cube() {

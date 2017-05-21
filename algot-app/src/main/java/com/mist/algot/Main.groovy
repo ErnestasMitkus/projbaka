@@ -34,8 +34,10 @@ class Main {
 
         List<Entity> entities = args.length > 1 ?
                 Scenarios.scenarioFromName(args[1]) :
-                Scenarios.dragons()
+                Scenarios.trees()
 //                { throw new RuntimeException("No scenario specified.") }()
+
+        entities << Scenarios.camera()
 
         if (System.getenv("DOTEST") != null) {
             PerformanceTester.doPerformanceTest { gameLoop(camera, light, renderer, entities) }
@@ -50,7 +52,7 @@ class Main {
     }
 
     private static void mainGameLoop(Camera camera, Light light, MasterRenderer renderer, List<Entity> entities) {
-        CommandRegistry.registerCommands()
+        CommandRegistry.registerCommands(camera)
         while (!Display.isCloseRequested()) {
             KeyboardManager.process()
             gameLoop(camera, light, renderer, entities)
@@ -61,7 +63,7 @@ class Main {
         DisplayManager.prepare()
         camera.move(DisplayManager.delta)
 
-        entities*.increaseRotation(0, (float) (60 * DisplayManager.delta), 0)
+//        entities*.increaseRotation(0, (float) (60 * DisplayManager.delta), 0)
         entities.each { renderer.processEntity(it) }
 
         renderer.render(light, camera)

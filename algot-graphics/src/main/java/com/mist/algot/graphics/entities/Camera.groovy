@@ -10,9 +10,9 @@ import org.lwjgl.util.vector.Vector4f
 
 class Camera {
 
-    private static final float CAM_SPEED = 13f
-    private static final float PITCH_SPEED = 13f
-    private static final float YAW_SPEED = 13f
+    private static final float CAM_SPEED = 30f
+    private static final float PITCH_SPEED = 20f
+    private static final float YAW_SPEED = 20f
     private static final float PYR_SPEED = 20f
 
     private Vector3f position = new Vector3f()
@@ -98,6 +98,13 @@ class Camera {
 
     Matrix4f getViewMatrix() {
         Maths.createViewMatrix(position, pitch, yaw, roll)
+    }
+
+    void goToBirdView() {
+        position = new Vector3f(0, 208f, 0)
+        pitch = 90f
+        yaw = 2f
+        roll = 0
     }
 
     Vector3f getPosition() {

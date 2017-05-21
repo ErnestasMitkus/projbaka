@@ -43,6 +43,10 @@ class Entity {
         rotation.z += dz
     }
 
+    void setScale(Vector3f scale) {
+        this.scale = scale
+    }
+
     TexturedModel getModel() {
         return model
     }

@@ -21,7 +21,7 @@ class Renderer {
 
     static final float FOV = 70 // field of view
     static final float NEAR_PLANE = 5
-    static final float FAR_PLANE = 300
+    static final float FAR_PLANE = 500
 
     private final StaticShader staticShader
     private final FrustumShader frustumShader
