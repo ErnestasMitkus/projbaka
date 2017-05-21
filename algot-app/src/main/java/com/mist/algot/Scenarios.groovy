@@ -81,6 +81,17 @@ class Scenarios {
         }
     }
 
+    static List<Entity> dragonsF() {
+        [
+            new Vector3f(-9, -5, -25),
+            new Vector3f(-3, -5, -25),
+            new Vector3f(9, -5, -25),
+            new Vector3f(3, -5, -25),
+        ].collect {
+            new Entity(DRAGON_MODEL, it)
+        }
+    }
+
     static List<Entity> trees() {
         float dist = 100
         float dist1 = 150
@@ -126,6 +137,7 @@ class Scenarios {
         Map<String, Closure<List<Entity>>> scenarios = [
             cube: Scenarios.&cube,
             dragons: Scenarios.&dragons,
+            dragonsF: Scenarios.&dragonsF,
             trees: Scenarios.&trees,
             stalls: Scenarios.&stalls
         ]
