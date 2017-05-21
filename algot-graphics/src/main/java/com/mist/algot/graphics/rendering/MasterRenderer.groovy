@@ -9,8 +9,8 @@ import com.mist.algot.graphics.models.TexturedModel
 import com.mist.algot.graphics.shaders.FrustumShader
 import com.mist.algot.graphics.shaders.StaticShader
 import com.mist.algot.graphics.toolbox.FrustumHelpers
-import com.mist.algot.graphics.toolbox.Maths
 import org.lwjgl.input.Keyboard
+import org.lwjgl.util.vector.Matrix4f
 import org.lwjgl.util.vector.Vector3f
 import org.lwjgl.util.vector.Vector4f
 
@@ -33,7 +33,7 @@ class MasterRenderer {
     private boolean frustumPlanesRecalculatingPending
     private boolean lockFrustumToCamera
     private boolean useFrustumCulling
-    private Vector3f lastCameraPos = null
+    private Matrix4f lastCameraViewMatrix = null
 
     MasterRenderer() {
         KeyboardManager.onPress(Keyboard.KEY_PERIOD, {
@@ -95,8 +95,8 @@ class MasterRenderer {
 
     void processFrustumPlanes(Camera camera) {
         frustumShader.start()
-        if (lockFrustumToCamera && camera.position != lastCameraPos) {
-            lastCameraPos = camera.position
+        if (lockFrustumToCamera && camera.viewMatrix != lastCameraViewMatrix) {
+            lastCameraViewMatrix = camera.viewMatrix
             frustumPlanesRecalculatingPending = true
         }
         if (frustumPlanesRecalculatingPending || !frustumPlanes) {
