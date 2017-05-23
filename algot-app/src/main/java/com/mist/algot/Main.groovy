@@ -38,7 +38,7 @@ class Main {
 
         List<Entity> entities = args.length > 1 ?
                 Scenarios.scenarioFromName(args[1]) :
-                Scenarios.trees()
+                Scenarios.dragonsF()
 //                { throw new RuntimeException("No scenario specified.") }()
 
 //        entities << Scenarios.camera()
@@ -67,8 +67,8 @@ class Main {
         DisplayManager.prepare()
         camera.move(DisplayManager.delta)
 
-        float spin = (float) (60 * DisplayManager.delta)
-//        entities*.increaseRotation(0, spin, 0)
+        float spin = (float) (30 * DisplayManager.delta)
+        entities*.increaseRotation(0, spin, 0)
 
         entities.each { renderer.processEntity(it) }
 

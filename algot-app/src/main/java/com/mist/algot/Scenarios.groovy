@@ -47,7 +47,7 @@ class Scenarios {
         STALL_MODEL = new TexturedModel(STALL_RAWMODEL, STALL_TEXTURE, new BoundingSphere(0.4f, new Vector3f(0, 3.5f, -1f)))
 
         CUBE_RAWMODEL = OBJLoader.loadObjModel("/objects/simpleCube.obj", loader)
-        CUBE_TEXTURE = new ModelTexture(loader.loadTexture("/textures/mud.png"))
+        CUBE_TEXTURE = new ModelTexture(loader.loadTexture("/textures/white.png"))
         CUBE_TEXTURE.shineDamper = 10
         CUBE_TEXTURE.reflectivity = 1
         CUBE_MODEL = new TexturedModel(CUBE_RAWMODEL, CUBE_TEXTURE, new BoundingSphere(0.35f, new Vector3f(0, 0.5f, 0)))

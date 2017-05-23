@@ -15,7 +15,8 @@ class PerformanceTester {
     private static final List<PerformanceTests> tests
 
     static {
-        tests = PerformanceTests.values()
+//        tests = PerformanceTests.values()
+        tests = [PerformanceTests.BACKFACE_Z_AND_FRUSTUM]
         if (System.getenv("DEMOTEST") != null) {
             println "Demo Test mode activated. Warmup time: 5 sec., Test duration: 30 sec."
             EACH_TEST_DURATION = TimeUnit.SECONDS.toMillis(30)
